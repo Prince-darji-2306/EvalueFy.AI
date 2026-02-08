@@ -1,0 +1,22 @@
+[
+    {
+        "question": "Explain the difference between a list and a tuple in Python. When would you use one over the other?",
+        "difficulty": "easy",
+        "expected_concepts": [
+            "mutability",
+            "performance",
+            "syntax",
+            "hashability"
+        ]
+    },
+    {
+        "question": "Explain the difference between a set and a dict in Python. When would you use one over the other?",
+        "difficulty": "easy",
+        "expected_concepts": [
+            "mutability",
+            "performance",
+            "syntax",
+            "hashability"
+        ]
+    }
+]

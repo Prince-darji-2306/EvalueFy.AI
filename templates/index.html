@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyPrep.AI | AI Interview</title>
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+
+<body>
+  <div class="container">
+    <div id="details-section" class="card fade-in">
+      <h2>Welcome</h2>
+      <p class="subtitle">Please enter your details to start</p>
+
+      <div class="form-group">
+        <label for="candidate-name">Candidate Name</label>
+        <input type="text" id="candidate-name" placeholder="e.g. John Doe">
+      </div>
+
+      <div class="form-group">
+        <label for="candidate-role">Target Role</label>
+        <input type="text" id="candidate-role" placeholder="e.g. Software Engineer">
+      </div>
+
+      <button onclick="submitDetails()">Submit & Start</button>
+    </div>
+
+    <!-- Interview Section -->
+    <div id="interview-section" class="card">
+      <h2>🎤 Interview</h2>
+      <div id="question-display" class="question-box">
+        <p id="question">Please wait, loading question...</p>
+      </div>
+      <p id="interview-header" class="subtitle">Ready to speak?</p>
+
+      <div class="mic-container">
+        <button id="mic-btn" class="pulse-button" onclick="startListening()">🎤</button>
+      </div>
+
+      <div class="action-container">
+        <button id="submit-btn" class="secondary-button" onclick="submitAnswer()">Submit Answer for Review</button>
+      </div>
+
+      <div id="result">Your speech will appear here...</div>
+
+      <div id="review-container">
+        <h3>📊 Interview Review</h3>
+        <div id="review-content" class="review-box">
+          <div class="loading-spinner">Analyzing your response...</div>
+        </div>
+        <button id="reset-btn" onclick="location.reload()">Try Another Interview</button>
+      </div>
+
+    </div>
+  </div>
+
+
+  <script src="/static/js/script.js"></script>
+</body>
+
+</html>
