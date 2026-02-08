@@ -1,5 +1,4 @@
 import json
-import random
 from pydantic import BaseModel
 from llm_engine import get_response
 from fastapi import FastAPI, Request
@@ -7,8 +6,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from nodes import graph
-
-
+from nodes import evaluator_node, question_node, report_node
 
 
 app = FastAPI()
@@ -38,18 +36,19 @@ def InitGraph(name, role):
     state = {
         "candidate_name": name,
         "candidate_role": role,
-        "question_bank": [], # Nodes will load this
+        "question_bank": get_questions(), # Load bank here
         "asked_questions": [],
         "question": None,
         "answer": None,
         "is_follow_up" : False,
         "follow_upQ": None,
-        "review": None
+        "review": None,
+        "total_score": 0,
+        "num_answered": 0,
+        "interview_complete": False
     }
     main_state = graph.invoke(state)
     return main_state.get("question")
-
-
 
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request):
@@ -76,16 +75,36 @@ def save_candidate(details: CandidateInfo):
 
 @app.post("/api/review")
 def review(data: dict):
+    global main_state
     question = data.get("question")
     answer = data.get("answer")
+    
     if not question or not answer:
         return {"error": "Missing question or answer"}
     
+    if not main_state:
+        return {"error": "Interview state not initialized"}
+
     try:
-        review_text = get_response(question, answer)
-        return {"review": review_text}
+        # Update state with answer and current question
+        main_state["question"] = question
+        main_state["answer"] = answer
+        
+        # Invoke the graph. The graph will now automatically:
+        # 1. Start at 'evaluator_node' (because answer is present)
+        # 2. Decide if follow-up is needed OR if next question/report is needed
+        # 3. Update state accordingly
+        result = graph.invoke(main_state)
+        main_state = result
+        return {
+            "review": result.get("review"),
+            "next_question": result.get("question"),
+            "is_follow_up": result.get("is_follow_up"),
+            "interview_complete": result.get("interview_complete")
+        }
+        
     except Exception as e:
-        print(f"Error getting LLM review: {e}")
-        return {"error": "Failed to get review from AI."}
+        print(f"Error in review process: {e}")
+        return {"error": "Failed to process review."}
 
 

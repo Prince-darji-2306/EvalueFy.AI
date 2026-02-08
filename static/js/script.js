@@ -42,7 +42,6 @@ if (SpeechRecognition) {
   const recognition = new SpeechRecognition();
   recognition.lang = "en-US";
   recognition.interimResults = true;
-  recognition.continuous = true;
 
   window.startListening = () => {
     recognition.start();
@@ -119,17 +118,24 @@ window.submitAnswer = async () => {
 
     if (data.review) {
       reviewContent.innerHTML = formatReview(data.review);
+
     } else {
       reviewContent.innerText = "Failed to get review: " + (data.error || "Unknown error");
     }
   } catch (error) {
-    reviewContent.innerText = "Error: " + error.message;
+    reviewContent.innerText = error;
   }
 };
 
-function formatReview(text) {
-  // Basic formatting for the LLM response
-  return text.split('\n').map(line => `<p>${line}</p>`).join('');
+function formatReview(review) {
+  if (!review || typeof review !== "object") return "";
+
+  return `
+    <p><strong>Score:</strong> ${review.score ?? "N/A"}</p>
+    <p><strong>Reason:</strong> ${review.reason ?? "N/A"}</p>
+    <p><strong>Improvements:</strong> ${review.improvements ?? "N/A"}</p>
+    <p><strong>Follow-up:</strong> ${review.follow_up ?? "N/A"}</p>
+  `;
 }
 
 
