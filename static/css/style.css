@@ -245,7 +245,7 @@ button.secondary-button:hover {
     background: rgba(255, 255, 255, 0.6);
     border-radius: 16px;
     border: 1px dashed var(--glass-border);
-    font-style: italic;
+    /* font-style: italic; */
     color: var(--text-main);
     min-height: 100px;
     max-height: 200px;
@@ -269,4 +269,70 @@ button.secondary-button:hover {
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+/* Evaluation and Report Styles */
+.evaluation-result p {
+    margin-bottom: 12px;
+}
+
+.report-card {
+    border: 2px solid var(--primary);
+    padding: 20px;
+    border-radius: 16px;
+    background: rgba(17, 29, 92, 0.03);
+}
+
+.report-card h4 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    color: var(--primary);
+}
+
+.summary-text {
+    margin-top: 15px;
+    font-weight: 500;
+}
+
+.follow-up-hint {
+    color: #b45309;
+    /* Amber color for hint */
+    font-style: italic;
+    background: #fef3c7;
+    padding: 10px;
+    border-radius: 8px;
+    margin-top: 10px;
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+    background: var(--primary-hover);
+    transform: scale(1.02);
+}
+
+.btn-secondary {
+    background: transparent;
+    color: var(--primary);
+    padding: 12px 24px;
+    border: 2px solid var(--primary);
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+    background: var(--primary);
+    color: white;
+    transform: scale(1.02);
 }
