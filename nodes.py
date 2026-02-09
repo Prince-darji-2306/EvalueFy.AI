@@ -10,13 +10,12 @@ class InterviewState(TypedDict):
     candidate_role: str
     question_bank: List[dict]
     asked_questions: List[str]
+    answered_questions: List[Dict[str, str]]
     question: Optional[str]
     answer: Optional[str]
     is_follow_up: bool
-    follow_upQ: Optional[str]
     review: Optional[dict] # Changed to dict to store score/reason/etc
     total_score: int
-    num_answered: int
     interview_complete: bool
 
 def question_node(state: InterviewState):
@@ -35,44 +34,53 @@ def question_node(state: InterviewState):
     return {
         "question": selected_q,
         "asked_questions": asked,
-        "is_follow_up": False,
-        "follow_upQ": None
+        "is_follow_up": False
     }
 
 def evaluator_node(state: InterviewState):
     """Evaluates the candidate's answer and decides next steps."""
     question = state.get("question")
     answer = state.get("answer")
+    is_follow_up = state.get("is_follow_up", False)
+    asked_questions = state.get("asked_questions", [])
+    answered_questions = state.get("answered_questions", [])
     
     if not question or not answer:
         return {"review": {"score": 0, "reason": "Missing Q or A"}}
 
     evaluation = evaluate_response(question, answer)
     
+    # Store the answered question
+    answered_questions.append({"question": question, "answer": answer})
+    
     new_total_score = state.get("total_score", 0) + evaluation.get("score", 0)
-    new_num_answered = state.get("num_answered", 0) + 1
     
     update = {
         "review": evaluation,
         "total_score": new_total_score,
-        "num_answered": new_num_answered
+        "answered_questions": answered_questions
     }
     
-    # If score < 6 and a follow-up is provided
-    if evaluation.get("score", 0) < 6 and evaluation.get("follow_up"):
+    # Decide if we need a follow-up
+    # If we are currently in a follow-up, we don't trigger another one (business rule choice or simplified flow)
+    # OR if score < 6 and a follow-up is provided
+    if not is_follow_up and evaluation.get("score", 0) < 6 and evaluation.get("follow_up"):
         update["question"] = evaluation["follow_up"]
         update["is_follow_up"] = True
-        update["follow_upQ"] = evaluation["follow_up"]
+        # Add follow-up to asked_questions to be safe (though it's generated, not from bank)
+        asked_questions.append(evaluation["follow_up"])
+        update["asked_questions"] = asked_questions
     else:
+        # If we just finished a follow-up or score is high, next step is question_node (next_question)
         update["is_follow_up"] = False
-        update["follow_upQ"] = None
         
     return update
 
 def report_node(state: InterviewState):
     """Generates the final report."""
     total = state.get("total_score", 0)
-    count = state.get("num_answered", 0)
+    answered = state.get("answered_questions", [])
+    count = len(answered)
     avg_score = total / count if count > 0 else 0
     
     report = {

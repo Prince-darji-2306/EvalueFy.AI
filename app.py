@@ -38,13 +38,12 @@ def InitGraph(name, role):
         "candidate_role": role,
         "question_bank": get_questions(), # Load bank here
         "asked_questions": [],
+        "answered_questions": [],
         "question": None,
         "answer": None,
         "is_follow_up" : False,
-        "follow_upQ": None,
         "review": None,
         "total_score": 0,
-        "num_answered": 0,
         "interview_complete": False
     }
     main_state = graph.invoke(state)
@@ -90,10 +89,6 @@ def review(data: dict):
         main_state["question"] = question
         main_state["answer"] = answer
         
-        # Invoke the graph. The graph will now automatically:
-        # 1. Start at 'evaluator_node' (because answer is present)
-        # 2. Decide if follow-up is needed OR if next question/report is needed
-        # 3. Update state accordingly
         result = graph.invoke(main_state)
         main_state = result
         return {

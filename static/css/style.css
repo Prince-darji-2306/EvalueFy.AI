@@ -276,11 +276,13 @@ button.secondary-button:hover {
     margin-bottom: 12px;
 }
 
-.report-card {
+.report-card,
+.report-box {
     border: 2px solid var(--primary);
     padding: 20px;
     border-radius: 16px;
     background: rgba(17, 29, 92, 0.03);
+    margin-bottom: 20px;
 }
 
 .report-card h4 {
