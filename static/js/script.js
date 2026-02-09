@@ -119,6 +119,20 @@ window.submitAnswer = async () => {
     if (data.review) {
       reviewContent.innerHTML = formatReview(data.review);
 
+      // Update the question for next turn
+      if (data.next_question) {
+        document.getElementById("question").innerText = data.next_question;
+        // Clear previous answer text
+        result.innerText = "Your speech will appear here...";
+        // If it's a follow-up, maybe show a hint or just let it be
+        if (data.is_follow_up) {
+          console.log("This is a follow-up question.");
+        }
+      } else if (data.interview_complete) {
+        // Show the final report
+        showReport(data.review);
+      }
+
     } else {
       reviewContent.innerText = "Failed to get review: " + (data.error || "Unknown error");
     }
@@ -131,10 +145,38 @@ function formatReview(review) {
   if (!review || typeof review !== "object") return "";
 
   return `
-    <p><strong>Score:</strong> ${review.score ?? "N/A"}</p>
-    <p><strong>Reason:</strong> ${review.reason ?? "N/A"}</p>
-    <p><strong>Improvements:</strong> ${review.improvements ?? "N/A"}</p>
-    <p><strong>Follow-up:</strong> ${review.follow_up ?? "N/A"}</p>
+    <div class="evaluation-result">
+      <p><strong>Score:</strong> ${review.score ?? "N/A"}/10</p>
+      <p><strong>Reason:</strong> ${review.reason ?? "N/A"}</p>
+      <p><strong>Improvements:</strong> ${review.improvements ?? "N/A"}</p>
+    </div>
+  `;
+}
+
+function showReport(report) {
+  if (!report) return;
+
+  const interviewSection = document.getElementById("interview-section");
+  const reportSection = document.getElementById("report-section");
+  const reportContent = document.getElementById("report-content");
+  const reviewContainer = document.getElementById("review-container");
+
+  // Hide interview elements
+  interviewSection.style.display = "none";
+  reviewContainer.style.display = "none";
+
+  // Show report section
+  reportSection.style.display = "block";
+
+  reportContent.innerHTML = `
+    <div class="report-card">
+      <h4>Overall Performance</h4>
+      <p><strong>Candidate:</strong> ${report.candidate_name}</p>
+      <p><strong>Role:</strong> ${report.role}</p>
+      <p><strong>Total Questions:</strong> ${report.total_questions}</p>
+      <p><strong>Average Score:</strong> ${report.average_score}/10</p>
+      <p class="summary-text"><strong>Summary:</strong> ${report.summary}</p>
+    </div>
   `;
 }
 
