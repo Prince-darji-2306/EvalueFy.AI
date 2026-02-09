@@ -128,9 +128,9 @@ window.submitAnswer = async () => {
         if (data.is_follow_up) {
           console.log("This is a follow-up question.");
         }
-      } else if (data.interview_complete) {
+      } else if (data.interview_complete && data.report) {
         // Show the final report
-        showReport(data.review);
+        showReport(data.report);
       }
 
     } else {
@@ -176,6 +176,17 @@ function showReport(report) {
       <p><strong>Total Questions:</strong> ${report.total_questions}</p>
       <p><strong>Average Score:</strong> ${report.average_score}/10</p>
       <p class="summary-text"><strong>Summary:</strong> ${report.summary}</p>
+      
+      <div class="feedback-section">
+        <h3 style='margin-top:10px;'>Areas for Improvement 🚀</h3>
+        ${report.feedback.map(item => `
+          <div class="feedback-item">
+            <p style='margin-top:10px;'><strong>Question:</strong> ${item.question}</p>
+            <p style='margin-top:10px;'><strong>Score:</strong> ${item.score}/10</p>
+            <p style='margin-top:10px;'><strong>Feedback:</strong> ${item.improvements}</p>
+          </div>
+        `).join('')}
+      </div>
     </div>
   `;
 }
