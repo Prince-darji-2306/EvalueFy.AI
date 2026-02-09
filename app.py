@@ -1,12 +1,10 @@
 import json
+from nodes import graph
 from pydantic import BaseModel
-from llm_engine import get_response
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from nodes import graph
-from nodes import evaluator_node, question_node, report_node
 
 
 app = FastAPI()
@@ -44,7 +42,10 @@ def InitGraph(name, role):
         "is_follow_up" : False,
         "review": None,
         "total_score": 0,
-        "interview_complete": False
+        "review": None,
+        "total_score": 0,
+        "interview_complete": False,
+        "final_report": None    
     }
     main_state = graph.invoke(state)
     return main_state.get("question")
@@ -95,7 +96,10 @@ def review(data: dict):
             "review": result.get("review"),
             "next_question": result.get("question"),
             "is_follow_up": result.get("is_follow_up"),
-            "interview_complete": result.get("interview_complete")
+            "next_question": result.get("question"),
+            "is_follow_up": result.get("is_follow_up"),
+            "interview_complete": result.get("interview_complete"),
+            "report": result.get("final_report")
         }
         
     except Exception as e:

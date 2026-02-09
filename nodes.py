@@ -10,13 +10,14 @@ class InterviewState(TypedDict):
     candidate_role: str
     question_bank: List[dict]
     asked_questions: List[str]
-    answered_questions: List[Dict[str, str]]
+    answered_questions: List[Dict[str, any]]
     question: Optional[str]
     answer: Optional[str]
     is_follow_up: bool
     review: Optional[dict] # Changed to dict to store score/reason/etc
     total_score: int
     interview_complete: bool
+    final_report: Optional[dict]
 
 def question_node(state: InterviewState):
     """Selects a random question from the bank that hasn't been asked yet."""
@@ -51,7 +52,9 @@ def evaluator_node(state: InterviewState):
     evaluation = evaluate_response(question, answer)
     
     # Store the answered question
-    answered_questions.append({"question": question, "answer": answer})
+    
+    # Store the answered question
+    answered_questions.append({"question": question, "answer": answer, "review": evaluation})
     
     new_total_score = state.get("total_score", 0) + evaluation.get("score", 0)
     
@@ -83,15 +86,31 @@ def report_node(state: InterviewState):
     count = len(answered)
     avg_score = total / count if count > 0 else 0
     
+    feedback_summary = []
+    
+    for entry in answered:
+        rev = entry.get("review", {})
+        q_text = entry.get("question", "Unknown Question")
+        score = rev.get("score", 0)
+        improvements = rev.get("improvements", "No specific improvements noted.")
+        
+        feedback_summary.append({
+            "question": q_text,
+            "score": score,
+            "improvements": improvements
+        })
+
     report = {
         "candidate_name": state["candidate_name"],
         "role": state["candidate_role"],
         "average_score": round(avg_score, 2),
         "total_questions": count,
-        "summary": f"Interview completed. Final score: {avg_score}/10."
+        "summary": f"Interview completed. Final score: {avg_score}/10.",
+        "feedback": feedback_summary
     }
     
-    return {"review": report, "interview_complete": True}
+    
+    return {"final_report": report, "interview_complete": True}
 
 def should_continue(state: InterviewState):
     """Conditional edge logic."""
@@ -135,7 +154,14 @@ builder.add_conditional_edges(
     }
 )
 
-builder.add_edge("question_node", END)
+builder.add_conditional_edges(
+    "question_node",
+    lambda state: "report_node" if state.get("interview_complete") else END,
+    {
+        "report_node": "report_node",
+        END: END
+    }
+)
 builder.add_edge("report_node", END)
 
 graph = builder.compile()
