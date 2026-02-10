@@ -1,3 +1,75 @@
+// Navigation & UI Modes
+window.showSection = (sectionId, btn) => {
+  const container = document.querySelector(".container");
+  container.classList.toggle("analyzer-mode", sectionId === "upload-section");
+  container.classList.toggle("interview-mode", sectionId === "interview-section");
+
+  ["details-section", "upload-section", "interview-section", "report-section"].forEach(id => {
+    document.getElementById(id).style.display = "none";
+  });
+
+  const section = document.getElementById(sectionId);
+  section.style.display = "block";
+  section.classList.add("fade-in");
+
+  document.querySelectorAll(".nav-link").forEach(link => link.classList.remove("active"));
+  if (btn) btn.classList.add("active");
+};
+
+// Handle File Name Display
+const fileInputEl = document.getElementById("resume-file");
+if (fileInputEl) {
+  fileInputEl.addEventListener("change", (e) => {
+    document.getElementById("file-name").innerText = e.target.files[0]?.name || "Choose a PDF file...";
+  });
+}
+
+// Resume Analysis Logic
+window.analyzeResume = async () => {
+  const fileInput = document.getElementById("resume-file");
+  const analyzeBtn = document.getElementById("analyze-btn");
+  const spinner = document.getElementById("upload-spinner");
+  const reportBox = document.getElementById("resume-report");
+
+  if (!fileInput.files[0]) return alert("Please select a PDF file.");
+
+  const formData = new FormData();
+  formData.append("file", fileInput.files[0]);
+
+  analyzeBtn.disabled = true;
+  spinner.style.display = "block";
+  reportBox.style.display = "none";
+
+  try {
+    const res = await fetch("/api/upload-resume", { method: "POST", body: formData });
+    const data = await res.json();
+    if (data.status === "success") showResumeReport(data.analysis);
+    else alert("Error: " + (data.error || "Failed."));
+  } catch (e) { alert("An error occurred."); }
+  finally { analyzeBtn.disabled = false; spinner.style.display = "none"; }
+};
+
+function showResumeReport(analysis) {
+  const reportBox = document.getElementById("resume-report");
+  reportBox.style.display = "block";
+  reportBox.classList.add("fade-in");
+
+  reportBox.innerHTML = `
+    <div class="report-card">
+      <div class="score-circle-container">
+        <div class="score-circle">
+          <span class="score-value">${analysis.ats_score}</span>
+          <span class="score-label">ATS Score</span>
+        </div>
+      </div>
+      <div class="analysis-section">
+        <h3>🔍 Advanced Analysis (Deductions)</h3>
+        <div class="analysis-content">${analysis.analysis}</div>
+      </div>
+    </div>
+  `;
+}
+
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 const result = document.getElementById("result");
 const micBtn = document.getElementById("mic-btn");
