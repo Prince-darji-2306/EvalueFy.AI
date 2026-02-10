@@ -1,10 +1,13 @@
 import json
+import os
+import shutil
 from nodes import graph
 from pydantic import BaseModel
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, UploadFile, File
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from agents.ResumeAnalyzer import analyze_resume
 
 
 app = FastAPI()
@@ -105,5 +108,30 @@ def review(data: dict):
     except Exception as e:
         print(f"Error in review process: {e}")
         return {"error": "Failed to process review."}
+
+
+@app.post("/api/upload-resume")
+async def upload_resume(file: UploadFile = File(...)):
+    if not file.filename.endswith(".pdf"):
+        return {"error": "Only PDF files are supported."}
+
+    # Create a temporary directory if it doesn't exist
+    os.makedirs("temp", exist_ok=True)
+    file_path = f"temp/{file.filename}"
+
+    try:
+        with open(file_path, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+
+        # Analyze the resume
+        analysis = analyze_resume(file_path)
+
+        # Clean up the temporary file
+        os.remove(file_path)
+
+        return {"status": "success", "analysis": analysis}
+    except Exception as e:
+        print(f"Error processing resume: {e}")
+        return {"error": "Failed to process resume."}
 
 

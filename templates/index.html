@@ -5,10 +5,22 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MyPrep.AI | AI Interview</title>
+  <link rel="icon" href="/static/img/icon.jpg" />
   <link rel="stylesheet" href="/static/css/style.css" />
 </head>
 
 <body>
+  <nav class="navbar fade-in">
+    <div class="nav-left">
+      <img src="/static/img/icon.jpg" alt="Logo" class="logo">
+      <span class="brand-name">MyPrep.AI</span>
+    </div>
+    <div class="nav-right">
+      <button class="nav-link active" onclick="showSection('details-section', this)">Interview</button>
+      <button class="nav-link" onclick="showSection('upload-section', this)">Analyze Resume</button>
+    </div>
+  </nav>
+
   <div class="container">
     <div id="details-section" class="card fade-in">
       <h2>Welcome</h2>
@@ -25,6 +37,33 @@
       </div>
 
       <button onclick="submitDetails()">Submit & Start</button>
+    </div>
+
+    <!-- Upload Resume Section -->
+    <div id="upload-section" class="card analyzer-card fade-in" style="display: none;">
+      <h2>📄 Resume Analyzer</h2>
+      <p class="subtitle">Upload your resume to get an ATS score and improvement tips.</p>
+
+      <div class="upload-container">
+        <div class="file-input-wrapper">
+          <input type="file" id="resume-file" accept=".pdf">
+          <label for="resume-file" class="file-label">
+            <span id="file-name">Choose a PDF file...</span>
+          </label>
+        </div>
+        <button onclick="analyzeResume()" id="analyze-btn">Analyze Resume</button>
+      </div>
+
+      <div id="upload-spinner" class="spinner-container" style="display: none;">
+        <div class="loading-spinner">Analyzing your resume, please wait...</div>
+        <div class="progress-bar-container">
+          <div class="progress-bar"></div>
+        </div>
+      </div>
+
+      <div id="resume-report" class="report-box" style="display: none;">
+        <!-- Analysis will be injected here -->
+      </div>
     </div>
 
     <!-- Interview Section -->
