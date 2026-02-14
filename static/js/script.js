@@ -25,6 +25,8 @@ if (fileInputEl) {
 }
 
 // Resume Analysis Logic
+let currentResumeText = "";
+
 window.analyzeResume = async () => {
   const fileInput = document.getElementById("resume-file");
   const analyzeBtn = document.getElementById("analyze-btn");
@@ -43,8 +45,10 @@ window.analyzeResume = async () => {
   try {
     const res = await fetch("/api/upload-resume", { method: "POST", body: formData });
     const data = await res.json();
-    if (data.status === "success") showResumeReport(data.analysis);
-    else alert("Error: " + (data.error || "Failed."));
+    if (data.status === "success") {
+      currentResumeText = data.analysis.resume_text;
+      showResumeReport(data.analysis);
+    } else alert("Error: " + (data.error || "Failed."));
   } catch (e) { alert("An error occurred."); }
   finally { analyzeBtn.disabled = false; spinner.style.display = "none"; }
 };
@@ -66,9 +70,41 @@ function showResumeReport(analysis) {
         <h3>🔍 Advanced Analysis (Deductions)</h3>
         <div class="analysis-content">${analysis.analysis}</div>
       </div>
+      <button onclick="startInterviewFromResume()" class="btn-primary" style="margin-top: 20px;">Take Interview from Resume</button>
     </div>
   `;
 }
+
+window.startInterviewFromResume = async () => {
+  const name = document.getElementById("candidate-name").value.trim() || "Candidate";
+  const role = document.getElementById("candidate-role").value.trim() || "Developer";
+
+  if (!currentResumeText) return alert("No resume data found.");
+
+  // Show loading state
+  const reportBox = document.getElementById("resume-report");
+  reportBox.innerHTML = '<div class="loading-spinner">Generating custom interview questions...</div>';
+
+  try {
+    const res = await fetch("/api/generate-resume-questions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ resume_text: currentResumeText, name, role })
+    });
+    const data = await res.json();
+
+    if (data.status === "success") {
+      const interviewBtn = Array.from(document.querySelectorAll(".nav-link")).find(btn => btn.innerText === "Interview");
+      showSection('interview-section', interviewBtn);
+      document.getElementById("interview-header").innerText = `Ready, ${name}?`;
+      document.getElementById("question").innerText = data.question;
+    } else {
+      alert("Error: " + data.error);
+    }
+  } catch (e) {
+    alert("Failed to start interview.");
+  }
+};
 
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 const result = document.getElementById("result");

@@ -18,6 +18,7 @@ class InterviewState(TypedDict):
     total_score: int
     interview_complete: bool
     final_report: Optional[dict]
+    resume_q: bool
 
 def question_node(state: InterviewState):
     """Selects a random question from the bank that hasn't been asked yet."""
@@ -25,7 +26,7 @@ def question_node(state: InterviewState):
     asked = state.get("asked_questions", [])
     
     available_questions = [q for q in bank if q["question"] not in asked]
-    
+    # print(available_questions)
     if not available_questions:
         return {"interview_complete": True, "question": None}
     
