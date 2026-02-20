@@ -21,7 +21,7 @@ def analyze_resume(path):
 
     prompt = f"""
     Advanced Resume Analysis:
-    First Format the Resume content Properly, If it is misaligned or jumbled.
+    First Format the Resume content Properly, If Content is misaligned or jumbled.
     Then Generate a detailed ATS score (0-100) and report based on the formatting. 
     Focus on WHY marks are deducted. Provide detailed insights.
     IGNORE text organization artifacts. Resume: {text}
