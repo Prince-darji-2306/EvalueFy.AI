@@ -1,9 +1,7 @@
 import random
-# import json
-
+from agents.Evaluator import evaluate_response
 from typing import List, TypedDict, Optional, Dict
 from langgraph.graph import StateGraph, START, END
-from agents.Evaluator import evaluate_response
 
 class InterviewState(TypedDict):
     candidate_name: str
@@ -51,8 +49,6 @@ def evaluator_node(state: InterviewState):
         return {"review": {"score": 0, "reason": "Missing Q or A"}}
 
     evaluation = evaluate_response(question, answer)
-    
-    # Store the answered question
     
     # Store the answered question
     answered_questions.append({"question": question, "answer": answer, "review": evaluation})
