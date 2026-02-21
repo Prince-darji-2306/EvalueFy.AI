@@ -67,7 +67,7 @@ function showResumeReport(analysis) {
         </div>
       </div>
       <div class="analysis-section">
-        <h3>🔍 Advanced Analysis (Deductions)</h3>
+        <h3>🔍 Advanced Analysis</h3>
         <div class="analysis-content">${analysis.analysis}</div>
       </div>
       <button onclick="startInterviewFromResume()" class="btn-primary" style="margin-top: 20px;">Take Interview from Resume</button>

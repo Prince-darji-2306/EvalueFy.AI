@@ -162,3 +162,23 @@ builder.add_conditional_edges(
 builder.add_edge("report_node", END)
 
 graph = builder.compile()
+
+#         ┌────────────┐
+#         │  START     │
+#         └─────┬──────┘
+#               │
+#        Has Answer?
+#          /        \
+#       Yes          No
+#       ↓             ↓
+#  evaluator       question
+#       ↓             ↓
+#  Follow-up?        END
+#    /     \
+#  Yes      No
+#  ↓        ↓
+# END     interview_complete?
+#             /       \
+#          Yes         No
+#          ↓            ↓
+#       report      question

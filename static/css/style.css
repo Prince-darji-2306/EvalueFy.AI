@@ -550,3 +550,8 @@ button.secondary-button:hover {
     font-size: 1rem;
     color: var(--text-main);
 }
+
+.analysis-content ul,
+.analysis-content ol {
+    margin-left: 20px;
+}
