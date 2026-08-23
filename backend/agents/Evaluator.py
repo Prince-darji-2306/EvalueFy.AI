@@ -1,6 +1,6 @@
 import json
-from core.llm import get_llm
-from schemas.review import EvaluationReview
+from core import get_llm
+from schemas import EvaluationReview
 
 def evaluate_response(question: str, answer: str) -> dict:
     """
@@ -25,7 +25,7 @@ def evaluate_response(question: str, answer: str) -> dict:
     # 1. Primary path: LangChain .with_structured_output(EvaluationReview)
     try:
         structured_llm = llm.with_structured_output(EvaluationReview)
-        result: EvaluationReview = structured_llm.invoke(prompt)
+        result = structured_llm.invoke(prompt)
         if isinstance(result, EvaluationReview):
             return result.model_dump()
         if isinstance(result, dict):
@@ -33,7 +33,7 @@ def evaluate_response(question: str, answer: str) -> dict:
     except Exception as e:
         print(f"Structured output error, falling back to JSON parsing: {e}")
     
-    # 2. Resilient fallback path for models that don't support native tool calling
+    # 2. Resilient fallback path for models without native tool-calling
     fallback_prompt = f"""{prompt}
     
     Format your response in STRICT JSON format with keys:

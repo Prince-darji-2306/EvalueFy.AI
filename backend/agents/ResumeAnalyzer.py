@@ -1,7 +1,7 @@
 import json
-from core.llm import get_llm
-from services.pdf_service import extract_text_from_pdf
-from schemas.resume import ResumeQuestionBank
+from core import get_llm
+from services import extract_text_from_pdf
+from schemas import ResumeQuestionBank
 
 try:
     import pyromark
@@ -9,7 +9,6 @@ try:
         return pyromark.html(md_text)
 except ImportError:
     def markdown_to_html(md_text: str) -> str:
-        # Simple fallback formatter if pyromark is unavailable
         import re
         html = md_text.replace('\n\n', '<br/><br/>')
         html = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', html)

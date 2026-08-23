@@ -1,28 +1,14 @@
 import os
 import json
 import random
-from typing import List, TypedDict, Optional, Dict, Any
+from typing import List
 from langgraph.graph import StateGraph, START, END
-from agents.Evaluator import evaluate_response
+
+from schemas import InterviewState
+from agents import evaluate_response
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 BACKEND_DIR = os.path.dirname(CURRENT_DIR)
-
-class InterviewState(TypedDict):
-    session_id: Optional[str]
-    candidate_name: str
-    candidate_role: str
-    question_bank: List[dict]
-    asked_questions: List[str]
-    answered_questions: List[Dict[str, Any]]
-    question: Optional[str]
-    answer: Optional[str]
-    is_follow_up: bool
-    review: Optional[dict]
-    total_score: int
-    interview_complete: bool
-    final_report: Optional[dict]
-    resume_q: bool
 
 def get_default_questions() -> List[dict]:
     bank_path = os.path.join(BACKEND_DIR, "question_bank", "python_developer.json")
