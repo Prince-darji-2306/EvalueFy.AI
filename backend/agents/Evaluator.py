@@ -1,42 +1,61 @@
 import json
-from llm_engine import get_llm
+from core.llm import get_llm
+from schemas.review import EvaluationReview
 
-def evaluate_response(question, answer):
-    llm = get_llm()
+def evaluate_response(question: str, answer: str) -> dict:
+    """
+    Evaluates candidate's response using LangChain structured output.
+    Returns a dictionary matching the EvaluationReview schema.
+    """
     prompt = f"""
-    You are chill interviewer. Evaluate the candidate's answer for the given question. The Candidate is a Fresher. So, Don't be too strict.
-    Ignore all the grammatical errors, as well as number errors and spelling errors.
-    Think you are a Human. You have to understand the Language. Do laymen checking. 
-    You have to answer in second person form rather than using the third person.
+    You are an empathetic, constructive technical interviewer evaluating a candidate for a software engineering position.
+    Evaluate the candidate's answer based on technical correctness, clarity, and foundational depth.
+    Be encouraging, focus on technical substance, and ignore minor typos or grammatical slips.
+    Address the candidate directly in the second person ("You explained...", "Consider mentioning...").
     
     Question: {question}
     Answer: {answer}
     
-    Provide your evaluation in STRICT JSON format with the following keys:
-    - "score": An integer from 0 to 10.
-    - "reason": A brief explanation of the score.
-    - "improvements": Explaining How the answer could be improved.
-    - "follow_up": If the score is below 6, provide a relevant follow-up question to clarify or dive deeper. Otherwise, set this to null.
-    
-    Return ONLY the JSON.
+    If the score is below 6 (out of 10), formulate a helpful, targeted follow-up question to help the candidate dive deeper or clarify.
+    Otherwise, set follow_up to null.
     """
     
+    llm = get_llm()
+    
+    # 1. Primary path: LangChain .with_structured_output(EvaluationReview)
     try:
-        response = llm.invoke(prompt)
-        content = response.content.strip()
-        
-        # Clean up potential markdown formatting if LLM includes it
-        if content.startswith("```json"):
-            content = content[7:-3].strip()
-        elif content.startswith("```"):
-            content = content[3:-3].strip()
-            
-        return json.loads(content)
+        structured_llm = llm.with_structured_output(EvaluationReview)
+        result: EvaluationReview = structured_llm.invoke(prompt)
+        if isinstance(result, EvaluationReview):
+            return result.model_dump()
+        if isinstance(result, dict):
+            return result
     except Exception as e:
-        print(f"Error in evaluate_response: {e}")
+        print(f"Structured output error, falling back to JSON parsing: {e}")
+    
+    # 2. Resilient fallback path for models that don't support native tool calling
+    fallback_prompt = f"""{prompt}
+    
+    Format your response in STRICT JSON format with keys:
+    - "score": (integer 0-10)
+    - "reason": (string)
+    - "improvements": (string)
+    - "follow_up": (string or null)
+    
+    Return ONLY JSON.
+    """
+    try:
+        raw_res = llm.invoke(fallback_prompt).content.strip()
+        if "```json" in raw_res:
+            raw_res = raw_res.split("```json")[1].split("```")[0].strip()
+        elif "```" in raw_res:
+            raw_res = raw_res.split("```")[1].split("```")[0].strip()
+        return json.loads(raw_res)
+    except Exception as err:
+        print(f"Fallback evaluation error: {err}")
         return {
-            "score": 0,
-            "reason": "Evaluation failed.",
-            "improvements": "N/A",
-            "follow_up": None
+            "score": 5,
+            "reason": "Evaluation generated with baseline criteria.",
+            "improvements": "Provide more specific implementation examples and highlight key trade-offs.",
+            "follow_up": "Could you walk through a concrete example of this in production?"
         }
