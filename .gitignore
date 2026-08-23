@@ -1,1 +1,22 @@
+# Environment & secrets
 .env
+.env.*
+*.env
+
+# Dependencies & build outputs
+frontend/node_modules/
+frontend/dist/
+frontend/dist-ssr/
+
+# Python cache & virtual environments
+__pycache__/
+*.py[cod]
+
+
+
+# OS files
+.DS_Store
+Thumbs.db
+
+temp.md
+temp.py
