@@ -1,109 +1,71 @@
-import json
+import cmarkgfm as cgfm
 from core.llm import get_llm
-from services import extract_text_from_pdf
-from schemas import ResumeQuestionBank
-
-try:
-    import pyromark
-    def markdown_to_html(md_text: str) -> str:
-        return pyromark.html(md_text)
-except ImportError:
-    def markdown_to_html(md_text: str) -> str:
-        import re
-        html = md_text.replace('\n\n', '<br/><br/>')
-        html = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', html)
-        html = re.sub(r'### (.*?)\n', r'<h3>\1</h3>', html)
-        html = re.sub(r'## (.*?)\n', r'<h2>\1</h2>', html)
-        return html
+from services.pdf_service import extract_text_from_pdf
+from schemas import ResumeQuestionBank, ResumeATSReport
 
 def analyze_resume(path: str) -> dict:
     """
-    Extracts resume text and generates an ATS score benchmark and detailed deduction analysis.
+    Extracts resume text and generates structured ATS analysis using LLM function calling.
     """
     text = extract_text_from_pdf(path)
     if not text:
         return {"error": "Failed to extract text from the provided PDF."}
 
     prompt = f"""
-    You are an expert ATS (Applicant Tracking System) auditing engine.
-    Evaluate the following resume and compute a realistic ATS score (0-100).
-    Provide a detailed diagnostic breakdown focusing on WHY marks were deducted, missing industry keywords, and formatting risks.
-    Use clear markdown headings (## Summary, ### Deductions, ### Recommendations).
-    
-    Resume:
+    You are a pragmatic, senior technical recruiter and ATS (Applicant Tracking System) auditing specialist.
+    Evaluate the candidate's resume below and produce a structured ATS evaluation.
+
+    === CORE EVALUATION PRINCIPLES ===
+    1. EVALUATE WHAT IS ACTUALLY PRESENT:
+    - Judge the resume strictly on the candidate's actual projects, domain, and chosen tech stack.
+    - DO NOT penalize the candidate for not listing technologies they do not claim to know (e.g., do NOT demand they add Spark, Kubernetes, or AWS if their focus is Python/FastAPI/AI).
+    - DO NOT demand irrelevant personal details like visa status, nationality, or unlisted paid certifications.
+
+    2. REALISTIC ATS & PARSING CRITERIA:
+    - Focus on REAL ATS extraction risks: Is the section hierarchy clean? Are bullet points easy for parsers to associate with roles/projects?
+    - DO NOT nitpick trivial punctuation (e.g., missing colons after Email/Phone, date formatting hyphens). Modern ATS parsers extract contacts via regex.
+    - DO NOT speculate or complain about dates/years (the current year is 2026; accept all listed dates as legitimate).
+
+    3. KEY IMPACT AREAS TO ASSESS: Check this with Moderate complexity. 
+    - Quantified Results: Did the candidate mention measurable metrics (e.g., latency reduction, API load, accuracy, dataset size, active users)?
+    - Action Verbs & Technical Depth: Are project descriptions action-oriented (Engineered, Architected, Deployed, Optimized) vs passive task lists?
+    - Skill Contextualization: Are listed skills (e.g. LangGraph, FastAPI, Docker) demonstrated within the project bullet points rather than isolated in a skill list?
+
+    Candidate Resume:
     {text}
-    
-    Format your response EXACTLY as:
-    SCORE: [number]
-    REPORT: [Markdown Analysis]
     """
     
     llm = get_llm()
-    res = llm.invoke(prompt).content
-    
-    try:
-        score_part = res.split("SCORE:")[1].split("REPORT:")[0].strip()
-        score = int(''.join(filter(str.isdigit, score_part)))
-        report_md = res.split("REPORT:")[1].strip()
-        report_html = markdown_to_html(report_md)
-        return {
-            "ats_score": score,
-            "analysis": report_html,
-            "resume_text": text
-        }
-    except Exception as e:
-        print(f"Resume ATS parse fallback: {e}")
-        return {
-            "ats_score": 80,
-            "analysis": markdown_to_html(res),
-            "resume_text": text
-        }
+    structured_llm = llm.with_structured_output(ResumeATSReport, method="function_calling")
+    result: ResumeATSReport = structured_llm.invoke(prompt)
+
+    return {
+        "name": getattr(result, "name", "Candidate"),
+        "role": getattr(result, "role", "Software Engineer"),
+        "ats_score": getattr(result, "ats_score", 85),
+        "analysis": cgfm.markdown_to_html(getattr(result, "report", "No report generated.")),
+        "resume_text": text
+    }
 
 def generate_resume_questions(text: str) -> list:
     """
-    Generates 12 tailored interview questions (9 technical + 3 general) derived from the resume.
+    Generates 12 tailored interview questions (9 technical + 3 general) derived from the resume using structured output.
     """
     prompt = f"""
-    Generate exactly 12 interview questions based on the candidate's resume below.
-    - Exactly 9 questions must focus on Technical depth, architecture, and project implementations mentioned in the resume.
-    - Exactly 3 questions must focus on general problem-solving, collaboration, and engineering trade-offs.
+    Generate exactly 12 interview questions tailored directly to the candidate's actual projects, libraries, and frameworks listed in their resume below.
+    - Exactly 9 questions must focus on technical architecture, design trade-offs, and implementation details of the technologies they actually used.
+    - Exactly 3 questions must focus on real-world engineering problem solving, debugging, and collaboration based on their background.
     
     Resume:
     {text}
     """
     
     llm = get_llm()
-    
-    # 1. Primary path: Structured output via Pydantic schema using function calling
-    try:
-        structured_llm = llm.with_structured_output(ResumeQuestionBank, method="function_calling")
-        result: ResumeQuestionBank = structured_llm.invoke(prompt)
-        if isinstance(result, ResumeQuestionBank):
-            return [q.model_dump() for q in result.questions]
-        if isinstance(result, dict) and "questions" in result:
-            return result["questions"]
-    except Exception as e:
-        print(f"Structured question generation error, falling back to JSON: {e}")
-        
-    # 2. Resilient fallback path
-    fallback_prompt = f"""{prompt}
-    
-    Format your response as a STRICT JSON array of objects with keys: "question", "difficulty", "expected_concepts".
-    Return ONLY JSON.
-    """
-    try:
-        raw = llm.invoke(fallback_prompt).content.strip()
-        if "```json" in raw:
-            raw = raw.split("```json")[1].split("```")[0].strip()
-        elif "```" in raw:
-            raw = raw.split("```")[1].split("```")[0].strip()
-        return json.loads(raw)
-    except Exception as err:
-        print(f"Fallback resume questions error: {err}")
-        return [
-            {
-                "question": "Can you walk through one of the key technical projects mentioned in your resume and explain your architectural design decisions?",
-                "difficulty": "medium",
-                "expected_concepts": ["architecture", "trade-offs", "problem-solving"]
-            }
-        ]
+    structured_llm = llm.with_structured_output(ResumeQuestionBank, method="function_calling")
+    result: ResumeQuestionBank = structured_llm.invoke(prompt)
+    print(result)
+    if isinstance(result, ResumeQuestionBank):
+        return [q.model_dump() for q in result.questions]
+    if isinstance(result, dict) and "questions" in result:
+        return result["questions"]
+    return []

@@ -14,7 +14,7 @@ def get_llm(model_name: str = None, temperature: float = 0.7):
     api_key = os.getenv("OPENROUTER_API_KEY") or os.getenv("GROQ_API_KEY")
     base_url = os.getenv("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1")
     # model = model_name or os.getenv("OPENROUTER_MODEL", "poolside/laguna-s-2.1:free")
-    model = 'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free'
+    model = 'minimax/minimax-m3:free'
 
 
     return ChatOpenAI(

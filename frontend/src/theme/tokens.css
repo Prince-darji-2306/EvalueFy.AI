@@ -78,3 +78,14 @@
     radial-gradient(var(--border) 1px, transparent 1px);
   background-size: 24px 24px;
 }
+
+/* Custom Text Selection */
+::selection {
+  background-color: rgba(34, 211, 238, 0.25);
+  color: inherit;
+}
+
+::-moz-selection {
+  background-color: rgba(34, 211, 238, 0.25);
+  color: inherit;
+}

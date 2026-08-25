@@ -82,6 +82,13 @@ class ReviewResponse(BaseModel):
 # ==========================================
 # Resume & ATS Schemas
 # ==========================================
+class ResumeATSReport(BaseModel):
+    """Structured output schema for Resume ATS extraction and scoring."""
+    name: str = Field(default="Candidate", description="Candidate's full name extracted from the resume")
+    role: str = Field(default="Software Engineer", description="Target or current professional title extracted from the resume")
+    ats_score: int = Field(..., ge=0, le=100, description="ATS compatibility score between 0 and 100")
+    report: str = Field(..., description="Comprehensive markdown analysis report containing ## Summary, ### Key Deductions & ATS Risks, and ### Actionable Optimization Steps")
+
 class ResumeQuestionItem(BaseModel):
     question: str = Field(..., description="Technical or architectural interview question tailored to the resume")
     difficulty: str = Field(default="medium", description="Difficulty level (easy, medium, hard)")
@@ -94,6 +101,8 @@ class ResumeQuestionBank(BaseModel):
     )
 
 class ResumeAnalysis(BaseModel):
+    name: Optional[str] = "Candidate"
+    role: Optional[str] = "Developer"
     ats_score: Any = Field(..., description="ATS score 0-100 or rating")
     analysis: str = Field(..., description="HTML or markdown report highlighting strengths and deductions")
     resume_text: str = Field(..., description="Extracted raw text from resume")

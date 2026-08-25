@@ -3,12 +3,13 @@ from .schema import (
     CandidateInfo,
     VoiceInput,
     ResumeAnalysis,
+    ResumeATSReport,
     ReviewRequest,
     ReviewResponse,
     FinalReport,
     FeedbackItem,
     EvaluationReview,
     ResumeQuestionBank,
-    GenerateResumeQuestionsRequest
-
+    ResumeQuestionItem,
+    GenerateResumeQuestionsRequest,
 )

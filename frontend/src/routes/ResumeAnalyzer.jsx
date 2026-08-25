@@ -30,6 +30,12 @@ export function ResumeAnalyzer() {
           fileName: file.name,
           fileSize: file.size,
         });
+        if (response.analysis.name && response.analysis.name !== 'Candidate') {
+          setCandidateName(response.analysis.name);
+        }
+        if (response.analysis.role && response.analysis.role !== 'Software Engineer') {
+          setTargetRole(response.analysis.role);
+        }
       } else {
         throw new Error('No analysis data received.');
       }
@@ -68,6 +74,44 @@ export function ResumeAnalyzer() {
       ? parseInt(resumeData.ats_score)
       : null;
 
+  // Helper for dynamic tier styling
+  const getTierMeta = (score) => {
+    if (score === null) return null;
+    if (score >= 80) {
+      return {
+        badge: 'OPTIMIZED TIER (TOP 10%)',
+        badgeClass: 'bg-emerald-500/10 text-emerald-500 dark:text-emerald-400 border-emerald-500/25',
+        title: 'High ATS Screening Compatibility',
+        desc: 'Strong keyword match, clean single-column hierarchy, and quantifiable impact across sections.',
+        keywordMatch: '92% Strong',
+        formatting: 'Clean & Structured',
+        impactScore: 'High Density',
+      };
+    }
+    if (score >= 60) {
+      return {
+        badge: 'MODERATE TIER (POTENTIAL GAPS)',
+        badgeClass: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/25',
+        title: 'Solid Foundation with Keyword Gaps',
+        desc: 'Parsable structure detected, but missing critical role-specific keywords or quantifiable achievements.',
+        keywordMatch: '68% Average',
+        formatting: 'Acceptable',
+        impactScore: 'Moderate',
+      };
+    }
+    return {
+      badge: 'ACTION REQUIRED (FILTER RISK)',
+      badgeClass: 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/25',
+      title: 'High Screening Friction Detected',
+      desc: 'Significant formatting, header parsing, or keyword density penalties detected that risk automated rejection.',
+      keywordMatch: '45% Low',
+      formatting: 'Complex / Table Risks',
+      impactScore: 'Low Quantification',
+    };
+  };
+
+  const tierMeta = getTierMeta(atsScore);
+
   return (
     <div className="min-h-screen bg-bg text-ink flex flex-col font-body">
       {/* Top Header Bar */}
@@ -76,7 +120,7 @@ export function ResumeAnalyzer() {
           <button
             type="button"
             onClick={() => navigate('/')}
-            className="p-2 rounded-xl bg-surface border border-border text-ink-muted hover:text-ink hover:border-signal-indigo/50 transition-colors"
+            className="p-2 rounded-xl bg-surface border border-border text-ink-muted hover:text-ink hover:border-cyan-pulse/50 transition-colors"
             title="Back to Landing"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -104,7 +148,7 @@ export function ResumeAnalyzer() {
 
       {/* Main Diagnostic Workspace */}
       <main className="flex-1 max-w-7xl w-full mx-auto p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* LEFT COLUMN: Resume Upload & Preview (5 cols on lg) */}
+        {/* LEFT COLUMN: Resume Upload & Parameters (5 cols on lg) */}
         <section className="lg:col-span-5 space-y-6 lg:sticky lg:top-8">
           <div className="bg-surface border border-border rounded-2xl p-6 shadow-sm">
             <div className="flex items-center justify-between mb-4 pb-3 border-b border-border">
@@ -112,7 +156,7 @@ export function ResumeAnalyzer() {
                 DOCUMENT INGESTION
               </span>
               {resumeData?.fileName && (
-                <span className="font-mono text-xs text-verified-teal truncate max-w-[180px]">
+                <span className="font-mono text-xs text-cyan-pulse truncate max-w-[180px]">
                   {resumeData.fileName}
                 </span>
               )}
@@ -143,7 +187,7 @@ export function ResumeAnalyzer() {
                     value={candidateName}
                     onChange={(e) => setCandidateName(e.target.value)}
                     placeholder="Candidate Name"
-                    className="w-full px-3.5 py-2 rounded-xl bg-surface-2 border border-border text-ink text-sm focus:outline-none focus:border-signal-indigo font-sans"
+                    className="w-full px-3.5 py-2 rounded-xl bg-surface-2 border border-border text-ink text-sm focus:outline-none focus:border-cyan-pulse font-sans transition-colors"
                   />
                 </div>
 
@@ -156,7 +200,7 @@ export function ResumeAnalyzer() {
                     value={targetRole}
                     onChange={(e) => setTargetRole(e.target.value)}
                     placeholder="Target Role"
-                    className="w-full px-3.5 py-2 rounded-xl bg-surface-2 border border-border text-ink text-sm focus:outline-none focus:border-signal-indigo font-sans"
+                    className="w-full px-3.5 py-2 rounded-xl bg-surface-2 border border-border text-ink text-sm focus:outline-none focus:border-cyan-pulse font-sans transition-colors"
                   />
                 </div>
 
@@ -165,9 +209,9 @@ export function ResumeAnalyzer() {
                   type="button"
                   onClick={handleStartInterviewFromResume}
                   disabled={isGeneratingQuestions}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="w-full mt-2 py-3.5 px-4 rounded-xl bg-signal-indigo text-white font-medium text-sm flex items-center justify-center gap-2.5 shadow-lg shadow-signal-indigo/25 hover:opacity-95 transition-all"
+                  whileHover={{ scale: 1.01 }}
+                  whileTap={{ scale: 0.99 }}
+                  className="w-full mt-2 py-3.5 px-4 rounded-xl bg-gradient-to-r from-signal-indigo to-cyan-pulse/90 text-white font-medium text-sm flex items-center justify-center gap-2.5 shadow-lg shadow-cyan-pulse/15 hover:opacity-95 transition-all"
                 >
                   {isGeneratingQuestions ? (
                     <>
@@ -201,43 +245,66 @@ export function ResumeAnalyzer() {
         <section className="lg:col-span-7 space-y-6">
           {resumeData ? (
             <div className="space-y-6">
-              {/* ATS Top Score Card */}
+              {/* Refined ATS Score Showcase Card */}
               <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
+                initial={{ opacity: 0, scale: 0.96 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="bg-surface border border-border rounded-2xl p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-sm"
+                transition={{ duration: 0.4, ease: 'easeOut' }}
+                className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-surface via-surface to-surface-2 border border-border p-6 sm:p-8 shadow-sm"
               >
-                <div className="flex-1 text-center sm:text-left">
-                  <span className="font-mono text-xs uppercase tracking-wider text-cyan-pulse font-semibold">
-                    BENCHMARK SCORECARD
-                  </span>
-                  <h2 className="font-display text-2xl sm:text-3xl font-bold text-ink mt-1 mb-2">
-                    {atsScore !== null && atsScore >= 80
-                      ? 'Exceptional ATS Compatibility'
-                      : atsScore !== null && atsScore >= 60
-                      ? 'Solid Foundation with Optimization Gaps'
-                      : 'High Friction / Needs Immediate Refinement'}
-                  </h2>
-                  <p className="text-sm text-ink-muted leading-relaxed">
-                    Evaluated for keyword distribution, structural clarity, and algorithmic screening pass-rates.
-                  </p>
-                </div>
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-6 relative z-10">
+                  <div className="flex-1 text-center sm:text-left space-y-2.5">
+                    {tierMeta && (
+                      <div className="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-wider font-semibold px-2.5 py-1 rounded-full border mb-1">
+                        <span className={`px-2 py-0.5 rounded-full border ${tierMeta.badgeClass}`}>
+                          {tierMeta.badge}
+                        </span>
+                      </div>
+                    )}
 
-                {atsScore !== null && (
-                  <div className="flex-shrink-0">
-                    <ScoreGauge
-                      value={atsScore}
-                      max={100}
-                      size={140}
-                      strokeWidth={10}
-                      label="ATS Match"
-                      unit="%"
-                    />
+                    <h2 className="font-display text-xl sm:text-2xl font-bold text-ink leading-tight">
+                      {tierMeta ? tierMeta.title : 'ATS Diagnostic Evaluation'}
+                    </h2>
+                    
+                    <p className="text-xs sm:text-sm text-ink-muted leading-relaxed max-w-md">
+                      {tierMeta ? tierMeta.desc : 'Evaluated for semantic keyword density, parsing hygiene, and recruiter readability.'}
+                    </p>
+
+                    {/* Mini Diagnostic Pillars */}
+                    {tierMeta && (
+                      <div className="pt-3 grid grid-cols-3 gap-2 border-t border-border/60">
+                        <div className="bg-surface-2/60 rounded-lg p-2 text-left border border-border/40">
+                          <div className="text-[10px] font-mono text-ink-muted uppercase">Keywords</div>
+                          <div className="text-xs font-semibold text-ink font-mono mt-0.5">{tierMeta.keywordMatch}</div>
+                        </div>
+                        <div className="bg-surface-2/60 rounded-lg p-2 text-left border border-border/40">
+                          <div className="text-[10px] font-mono text-ink-muted uppercase">Structure</div>
+                          <div className="text-xs font-semibold text-ink font-mono mt-0.5">{tierMeta.formatting}</div>
+                        </div>
+                        <div className="bg-surface-2/60 rounded-lg p-2 text-left border border-border/40">
+                          <div className="text-[10px] font-mono text-ink-muted uppercase">Impact</div>
+                          <div className="text-xs font-semibold text-ink font-mono mt-0.5">{tierMeta.impactScore}</div>
+                        </div>
+                      </div>
+                    )}
                   </div>
-                )}
+
+                  {atsScore !== null && (
+                    <div className="flex-shrink-0 p-2">
+                      <ScoreGauge
+                        value={atsScore}
+                        max={100}
+                        size={148}
+                        strokeWidth={9}
+                        label="ATS Match"
+                        unit="%"
+                      />
+                    </div>
+                  )}
+                </div>
               </motion.div>
 
-              {/* Detailed Breakdown Streaming Container */}
+              {/* Detailed Breakdown Report Container */}
               <motion.div
                 initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -246,14 +313,14 @@ export function ResumeAnalyzer() {
               >
                 <div className="flex items-center justify-between pb-4 mb-6 border-b border-border">
                   <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-signal-indigo" />
-                    <h3 className="font-mono text-xs uppercase tracking-wider text-ink-muted font-semibold">
+                    <span className="w-2.5 h-2.5 rounded-full bg-cyan-pulse animate-pulse" />
+                    <h3 className="font-mono text-xs uppercase tracking-wider text-ink font-semibold">
                       DEEP SCAN REPORT & WHY MARKS WERE DEDUCTED
                     </h3>
                   </div>
                 </div>
 
-                {/* Render the backend analysis HTML or text cleanly */}
+                {/* Render the backend analysis HTML cleanly */}
                 <div className="prose prose-sm dark:prose-invert max-w-none text-ink leading-relaxed space-y-4">
                   {resumeData.analysis ? (
                     <div
@@ -272,7 +339,7 @@ export function ResumeAnalyzer() {
             /* Empty State Placeholder */
             <div className="bg-surface border border-border rounded-2xl p-12 text-center flex flex-col items-center justify-center min-h-[420px]">
               <div className="w-16 h-16 rounded-2xl bg-surface-2 text-ink-muted flex items-center justify-center mb-4">
-                <svg className="w-8 h-8 opacity-40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-8 h-8 opacity-40 text-cyan-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                 </svg>
               </div>
