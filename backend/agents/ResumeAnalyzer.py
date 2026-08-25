@@ -1,5 +1,5 @@
 import json
-from core import get_llm
+from core.llm import get_llm
 from services import extract_text_from_pdf
 from schemas import ResumeQuestionBank
 
@@ -74,9 +74,9 @@ def generate_resume_questions(text: str) -> list:
     
     llm = get_llm()
     
-    # 1. Primary path: Structured output via Pydantic schema
+    # 1. Primary path: Structured output via Pydantic schema using function calling
     try:
-        structured_llm = llm.with_structured_output(ResumeQuestionBank)
+        structured_llm = llm.with_structured_output(ResumeQuestionBank, method="function_calling")
         result: ResumeQuestionBank = structured_llm.invoke(prompt)
         if isinstance(result, ResumeQuestionBank):
             return [q.model_dump() for q in result.questions]

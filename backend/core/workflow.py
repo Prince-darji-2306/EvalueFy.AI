@@ -5,7 +5,6 @@ from typing import List
 from langgraph.graph import StateGraph, START, END
 
 from schemas import InterviewState
-from agents import evaluate_response
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 BACKEND_DIR = os.path.dirname(CURRENT_DIR)
@@ -49,6 +48,8 @@ def question_node(state: InterviewState):
 
 def evaluator_node(state: InterviewState):
     """Evaluates the candidate's answer and determines next step or follow-up."""
+    from agents.Evaluator import evaluate_response
+
     question = state.get("question")
     answer = state.get("answer")
     is_follow_up = state.get("is_follow_up", False)

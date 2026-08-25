@@ -8,5 +8,7 @@ from .schema import (
     FinalReport,
     FeedbackItem,
     EvaluationReview,
-    ResumeQuestionBank
+    ResumeQuestionBank,
+    GenerateResumeQuestionsRequest
+
 )

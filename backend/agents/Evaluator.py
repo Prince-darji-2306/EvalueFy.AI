@@ -1,5 +1,5 @@
 import json
-from core import get_llm
+from core.llm import get_llm
 from schemas import EvaluationReview
 
 def evaluate_response(question: str, answer: str) -> dict:
@@ -22,9 +22,9 @@ def evaluate_response(question: str, answer: str) -> dict:
     
     llm = get_llm()
     
-    # 1. Primary path: LangChain .with_structured_output(EvaluationReview)
+    # 1. Primary path: LangChain with tool / function calling structured output
     try:
-        structured_llm = llm.with_structured_output(EvaluationReview)
+        structured_llm = llm.with_structured_output(EvaluationReview, method="function_calling")
         result = structured_llm.invoke(prompt)
         if isinstance(result, EvaluationReview):
             return result.model_dump()
