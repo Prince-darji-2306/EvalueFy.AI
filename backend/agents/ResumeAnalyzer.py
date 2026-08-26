@@ -68,33 +68,18 @@ def generate_resume_questions(text: str) -> list:
     structured_llm = llm.with_structured_output(ResumeQuestionBank, method="function_calling")
     result = structured_llm.invoke(prompt)
 
-    raw_questions = getattr(result, "questions", []) if not isinstance(result, dict) else result.get("questions", [])
-    formatted_questions = []
+    raw = getattr(result, "questions", []) if not isinstance(result, dict) else result.get("questions", [])
+    questions = []
 
-    for item in raw_questions:
+    for item in raw:
         if isinstance(item, ResumeQuestionItem):
             concepts = [c.strip() for c in item.expected_concepts.split(",") if c.strip()]
-            formatted_questions.append({
-                "question": item.question.strip(),
-                "difficulty": item.difficulty,
-                "expected_concepts": concepts
-            })
+            questions.append({"question": item.question.strip(), "difficulty": item.difficulty, "expected_concepts": concepts})
         elif isinstance(item, dict) and item.get("question"):
-            raw_concepts = item.get("expected_concepts", "")
-            if isinstance(raw_concepts, list):
-                concepts = [str(c).strip() for c in raw_concepts if str(c).strip()]
-            else:
-                concepts = [c.strip() for c in str(raw_concepts).split(",") if c.strip()]
-            formatted_questions.append({
-                "question": item["question"].strip(),
-                "difficulty": item.get("difficulty", "medium"),
-                "expected_concepts": concepts
-            })
+            raw_c = item.get("expected_concepts", "")
+            concepts = [c.strip() for c in (raw_c if isinstance(raw_c, list) else str(raw_c).split(",")) if str(c).strip()]
+            questions.append({"question": item["question"].strip(), "difficulty": item.get("difficulty", "medium"), "expected_concepts": concepts})
         elif isinstance(item, str) and item.strip():
-            formatted_questions.append({
-                "question": item.strip(),
-                "difficulty": "medium",
-                "expected_concepts": []
-            })
+            questions.append({"question": item.strip(), "difficulty": "medium", "expected_concepts": []})
 
-    return formatted_questions
+    return questions

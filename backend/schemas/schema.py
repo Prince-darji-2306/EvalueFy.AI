@@ -1,4 +1,4 @@
-from typing import List, TypedDict, Optional, Dict, Any
+from typing import List, TypedDict, Optional, Dict, Any, Union, Literal
 from pydantic import BaseModel, Field
 
 # ==========================================
@@ -29,8 +29,6 @@ class CandidateInfo(BaseModel):
 
 class VoiceInput(BaseModel):
     text: str = Field(..., description="Transcribed audio snippet")
-
-from typing import List, TypedDict, Optional, Dict, Any, Union
 
 # ==========================================
 # Review & Evaluation Schemas
@@ -74,13 +72,6 @@ class FinalReport(BaseModel):
     summary: str
     feedback: List[FeedbackItem]
 
-class ReviewResponse(BaseModel):
-    review: Optional[EvaluationReview] = None
-    next_question: Optional[str] = None
-    is_follow_up: bool = False
-    interview_complete: bool = False
-    report: Optional[FinalReport] = None
-
 # ==========================================
 # Resume & ATS Schemas
 # ==========================================
@@ -90,8 +81,6 @@ class ResumeATSReport(BaseModel):
     role: str = Field(default="Software Engineer", description="Target or current professional title extracted from the resume")
     ats_score: int = Field(..., ge=0, le=100, description="ATS compatibility score between 0 and 100")
     report: str = Field(..., description="Comprehensive markdown analysis report containing ## Summary, ### Key Deductions & ATS Risks, and ### Actionable Optimization Steps")
-
-from typing import Literal
 
 class ResumeQuestionItem(BaseModel):
     question: str = Field(..., description="Technical or architectural interview question tailored to the resume")
@@ -106,13 +95,6 @@ class ResumeQuestionBank(BaseModel):
         ...,
         description="List of 12 interview questions (9 technical + 3 general) tailored to the candidate's resume"
     )
-
-class ResumeAnalysis(BaseModel):
-    name: Optional[str] = "Candidate"
-    role: Optional[str] = "Developer"
-    ats_score: Any = Field(..., description="ATS score 0-100 or rating")
-    analysis: str = Field(..., description="HTML or markdown report highlighting strengths and deductions")
-    resume_text: str = Field(..., description="Extracted raw text from resume")
 
 class GenerateResumeQuestionsRequest(BaseModel):
     resume_text: str

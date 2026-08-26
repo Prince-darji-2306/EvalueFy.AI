@@ -21,8 +21,6 @@ def evaluate_response(question: str, answer: str) -> dict:
     """
     
     llm = get_llm()
-    
-    # 1. Primary path: LangChain with tool / function calling structured output
     try:
         structured_llm = llm.with_structured_output(EvaluationReview, method="function_calling")
         result = structured_llm.invoke(prompt)
@@ -31,31 +29,16 @@ def evaluate_response(question: str, answer: str) -> dict:
         if isinstance(result, dict):
             return result
     except Exception as e:
-        print(f"Structured output error, falling back to JSON parsing: {e}")
-    
-    # 2. Resilient fallback path for models without native tool-calling
-    fallback_prompt = f"""{prompt}
-    
-    Format your response in STRICT JSON format with keys:
-    - "score": (integer 0-10)
-    - "reason": (string)
-    - "improvements": (string)
-    - "follow_up": (string or null)
-    
-    Return ONLY JSON.
-    """
+        print(f"Structured output evaluation fallback: {e}")
+
     try:
-        raw_res = llm.invoke(fallback_prompt).content.strip()
-        if "```json" in raw_res:
-            raw_res = raw_res.split("```json")[1].split("```")[0].strip()
-        elif "```" in raw_res:
-            raw_res = raw_res.split("```")[1].split("```")[0].strip()
-        return json.loads(raw_res)
-    except Exception as err:
-        print(f"Fallback evaluation error: {err}")
+        raw_res = llm.invoke(f"{prompt}\nReturn ONLY a valid JSON object with keys: score, reason, improvements, follow_up.").content.strip()
+        cleaned = raw_res.replace("```json", "").replace("```", "").strip()
+        return json.loads(cleaned)
+    except Exception:
         return {
             "score": 5,
             "reason": "Evaluation generated with baseline criteria.",
-            "improvements": "Provide more specific implementation examples and highlight key trade-offs.",
-            "follow_up": "Could you walk through a concrete example of this in production?"
+            "improvements": "Provide more specific implementation depth and trade-offs.",
+            "follow_up": None
         }
