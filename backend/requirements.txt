@@ -1,0 +1,11 @@
+fastapi>=0.110.0
+uvicorn>=0.28.0
+python-multipart>=0.0.9
+python-dotenv>=1.0.0
+pydantic>=2.6.0
+langchain-core>=0.3.0
+langchain-openai>=0.2.0
+langchain-groq>=0.2.0
+langgraph>=0.2.0
+pymupdf>=1.24.0
+cmarkgfm>=2022.10.27

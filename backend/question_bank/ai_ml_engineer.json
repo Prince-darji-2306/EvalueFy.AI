@@ -1,0 +1,102 @@
+[
+  {
+    "question": "What is the difference between supervised, unsupervised, and reinforcement learning? Give a concrete real-world example of each.",
+    "difficulty": "easy",
+    "expected_concepts": ["labeled vs unlabeled data", "reward/policy functions", "classification/regression", "clustering/dimensionality reduction", "Markov Decision Process"]
+  },
+  {
+    "question": "Explain the Bias-Variance Tradeoff in machine learning. How do overfitting and underfitting relate to model complexity, and how do you diagnose them via learning curves?",
+    "difficulty": "easy",
+    "expected_concepts": ["high bias (underfitting)", "high variance (overfitting)", "training vs validation error", "regularization (L1/L2)", "cross-validation"]
+  },
+  {
+    "question": "How does Retrieval-Augmented Generation (RAG) work under the hood? Walk through document chunking, embedding generation, vector indexing, and prompt augmentation.",
+    "difficulty": "medium",
+    "expected_concepts": ["chunking strategies (recursive, semantic)", "vector embeddings", "approximate nearest neighbor (HNSW/FAISS)", "cosine similarity / dense retrieval", "context window assembly"]
+  },
+  {
+    "question": "Explain the Self-Attention mechanism in the Transformer architecture. How are Query, Key, and Value matrices calculated and scaled?",
+    "difficulty": "hard",
+    "expected_concepts": ["Scaled Dot-Product Attention", "Query/Key/Value projections", "Softmax normalization (sqrt(d_k))", "Multi-Head Attention", "positional encodings"]
+  },
+  {
+    "question": "What are evaluation metrics for Classification models (Precision, Recall, F1-Score, ROC-AUC)? Why is Accuracy misleading on imbalanced datasets?",
+    "difficulty": "easy",
+    "expected_concepts": ["Confusion Matrix (TP, FP, TN, FN)", "Precision vs Recall tradeoff", "Harmonic mean (F1)", "ROC curve and PR curve", "class imbalance techniques (SMOTE, class weights)"]
+  },
+  {
+    "question": "How does Backpropagation work in Deep Neural Networks? Explain the Chain Rule of calculus and how gradient descent updates network weights.",
+    "difficulty": "medium",
+    "expected_concepts": ["Forward pass loss computation", "Chain Rule partial derivatives", "gradient vector", "learning rate", "optimizers (SGD, Adam, RMSprop)"]
+  },
+  {
+    "question": "What are vanishing and exploding gradients in deep networks? What techniques (ReLU, Batch Normalization, Residual Skip Connections) solve them?",
+    "difficulty": "medium",
+    "expected_concepts": ["gradient decay through chain rule", "activation saturation (Sigmoid/Tanh)", "He/Xavier weight initialization", "Batch / Layer Normalization", "ResNet skip connections"]
+  },
+  {
+    "question": "What is Parameter-Efficient Fine-Tuning (PEFT) for Large Language Models? How does LoRA (Low-Rank Adaptation) work mathematically?",
+    "difficulty": "hard",
+    "expected_concepts": ["frozen base weights", "low-rank decomposition (W = W0 + B*A)", "rank (r) and alpha scaling", "QLoRA 4-bit quantization", "VRAM reduction"]
+  },
+  {
+    "question": "Explain the difference between dense retrieval (vector embeddings) and sparse retrieval (BM25 / TF-IDF). How does Hybrid Search combine them?",
+    "difficulty": "medium",
+    "expected_concepts": ["semantic similarity vs keyword matching", "BM25 inverted index", "vector search (cosine / dot product)", "Reciprocal Rank Fusion (RRF)", "cross-encoder re-ranking"]
+  },
+  {
+    "question": "What is Hallucination in Large Language Models, and what strategies (RAG, strict system prompts, self-consistency, DSPy) mitigate it in production?",
+    "difficulty": "easy",
+    "expected_concepts": ["probabilistic next-token generation", "grounding context with retrieved sources", "temperature parameter tuning", "chain-of-thought verification", "citation attribution"]
+  },
+  {
+    "question": "How does LangGraph orchestrate stateful multi-agent workflows? Explain StateGraph, TypedDict state, nodes, and conditional edges.",
+    "difficulty": "medium",
+    "expected_concepts": ["state machine", "StateGraph builder", "immutable/reducer state updates", "conditional routing", "human-in-the-loop / checkpoints"]
+  },
+  {
+    "question": "What is Quantization in LLMs (e.g. FP16 to INT8/INT4, AWQ, GGUF), and how does it reduce GPU VRAM requirements and inference latency?",
+    "difficulty": "hard",
+    "expected_concepts": ["weight quantization", "activation quantization", "precision vs perplexity loss", "KV-cache compression", "hardware tensor cores"]
+  },
+  {
+    "question": "How do you detect and handle Data Drift and Concept Drift in deployed production machine learning pipelines?",
+    "difficulty": "medium",
+    "expected_concepts": ["distribution shifts (P(X) vs P(Y|X))", "statistical tests (KS-test, PSI)", "monitoring feature distributions", "continuous retraining pipelines", "ground truth feedback loop"]
+  },
+  {
+    "question": "Explain the difference between L1 (Lasso) and L2 (Ridge) Regularization. Why does L1 produce sparse feature weights?",
+    "difficulty": "easy",
+    "expected_concepts": ["penalty terms (absolute value vs squared sum)", "feature selection", "geometric diamond vs circle constraint", "collinearity handling", "ElasticNet combination"]
+  },
+  {
+    "question": "What is Contrastive Learning (e.g. SimCLR, InfoNCE), and how is it used to train modern sentence embedding models?",
+    "difficulty": "hard",
+    "expected_concepts": ["positive vs negative pair sampling", "InfoNCE loss function", "cosine distance optimization", "data augmentations", "bi-encoder architectures"]
+  },
+  {
+    "question": "What are Ensemble Learning methods? Explain the fundamental difference between Bagging (Random Forest) and Boosting (XGBoost / LightGBM).",
+    "difficulty": "medium",
+    "expected_concepts": ["parallel variance reduction (Bagging/Bootstrap)", "sequential residual correction (Boosting)", "gradient boosting decision trees", "learning rate shrinkage", "feature importance"]
+  },
+  {
+    "question": "How do you design an LLM Guardrails pipeline to filter prompt injection, PII leakage, and toxic outputs before serving responses to users?",
+    "difficulty": "medium",
+    "expected_concepts": ["input sanitization / regex detection", "classification models for safety", "semantic intent validation", "anonymization of PII", "fail-safe fallback responses"]
+  },
+  {
+    "question": "What is the role of the Temperature, Top-P (nucleus sampling), and Top-K parameters during LLM generation and token sampling?",
+    "difficulty": "easy",
+    "expected_concepts": ["logits probability distribution", "softmax scaling by temperature", "cumulative probability threshold (Top-P)", "top-k candidate filtering", "creativity vs determinism"]
+  },
+  {
+    "question": "How does KV-Caching (Key-Value Caching) optimize autoregressive transformer inference throughput and reduce redundant matrix multiplications?",
+    "difficulty": "hard",
+    "expected_concepts": ["autoregressive token generation", "caching Key and Value tensors", "avoiding recomputing past token attention", "GPU memory footprint (PagedAttention/vLLM)", "prefill vs decode phase"]
+  },
+  {
+    "question": "What is Direct Preference Optimization (DPO) and how does it compare to RLHF (PPO) for aligning large language models with human preferences?",
+    "difficulty": "hard",
+    "expected_concepts": ["RLHF reward model training", "PPO policy gradients", "closed-form implicit reward loss in DPO", "chosen vs rejected preference pairs", "training stability advantages"]
+  }
+]

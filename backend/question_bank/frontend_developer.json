@@ -1,0 +1,102 @@
+[
+  {
+    "question": "What is the difference between let, const, and var in JavaScript, and how do hoisting and block scoping apply to them?",
+    "difficulty": "easy",
+    "expected_concepts": ["block scope", "function scope", "hoisting", "temporal dead zone", "reassignment"]
+  },
+  {
+    "question": "Explain the JavaScript Event Loop, call stack, microtask queue (Promises), and macrotask queue (setTimeout).",
+    "difficulty": "medium",
+    "expected_concepts": ["call stack", "microtasks", "macrotasks", "event loop phases", "Promise execution order"]
+  },
+  {
+    "question": "How does the React Virtual DOM work, and how does the Reconciliation (Fiber) algorithm optimize real DOM updates?",
+    "difficulty": "medium",
+    "expected_concepts": ["Virtual DOM diffing", "Fiber architecture", "reconciliation keys", "commit phase", "render phase"]
+  },
+  {
+    "question": "What are React Hooks rules, and why can Hooks not be called inside loops, conditions, or nested functions?",
+    "difficulty": "easy",
+    "expected_concepts": ["hook call order", "fiber linked list", "stable execution index", "useState/useEffect", "eslint-plugin-react-hooks"]
+  },
+  {
+    "question": "Explain the difference between useMemo, useCallback, and React.memo. When would using them be counterproductive?",
+    "difficulty": "medium",
+    "expected_concepts": ["referential equality", "expensive computation caching", "function memoization", "premature optimization", "re-render overhead"]
+  },
+  {
+    "question": "How do JavaScript closures work, and what is a common practical use case (e.g. data privacy or function currying)?",
+    "difficulty": "easy",
+    "expected_concepts": ["lexical scoping", "enclosing variable access", "data encapsulation", "factory functions", "memory persistence"]
+  },
+  {
+    "question": "What causes layout thrashing and reflows in the browser, and how do you optimize DOM animations for 60fps performance?",
+    "difficulty": "hard",
+    "expected_concepts": ["browser rendering pipeline", "reflow vs repaint", "composite layers", "requestAnimationFrame", "transform and opacity GPU acceleration"]
+  },
+  {
+    "question": "Explain how the useEffect cleanup function works and how to prevent memory leaks with AbortController in asynchronous fetch calls.",
+    "difficulty": "medium",
+    "expected_concepts": ["unmount cleanup", "AbortController.signal", "event listener removal", "race condition avoidance", "subscription cleanup"]
+  },
+  {
+    "question": "What is the difference between Server-Side Rendering (SSR), Client-Side Rendering (CSR), Static Site Generation (SSG), and Incremental Static Regeneration (ISR)?",
+    "difficulty": "medium",
+    "expected_concepts": ["hydration", "SEO benefits", "Time to First Byte (TTFB)", "build-time rendering", "Next.js rendering strategies"]
+  },
+  {
+    "question": "How does CSS specificity work, and how do cascade layers (@layer) and CSS custom properties (variables) improve modularity?",
+    "difficulty": "easy",
+    "expected_concepts": ["specificity calculation (inline, ID, class, tag)", "cascade rules", "@layer", "CSS variables", "BEM and styling isolation"]
+  },
+  {
+    "question": "Explain the difference between event bubbling and event capturing, and how event delegation improves performance on large lists.",
+    "difficulty": "easy",
+    "expected_concepts": ["event propagation phases", "e.stopPropagation", "e.preventDefault", "event delegation", "single parent listener"]
+  },
+  {
+    "question": "What is the React 18 Concurrent Mode, and how do useTransition and useDeferredValue improve UI responsiveness during heavy updates?",
+    "difficulty": "hard",
+    "expected_concepts": ["Concurrent rendering", "interruptible rendering", "useTransition priority", "useDeferredValue", "startTransition"]
+  },
+  {
+    "question": "How do you optimize Core Web Vitals (LCP, FID/INP, and CLS) on a content-heavy web application?",
+    "difficulty": "hard",
+    "expected_concepts": ["Largest Contentful Paint (LCP)", "Interaction to Next Paint (INP)", "Cumulative Layout Shift (CLS)", "font display swap", "image sizing and lazy loading"]
+  },
+  {
+    "question": "Explain the difference between deep comparison and shallow comparison in React state management libraries (e.g. Redux, Zustand).",
+    "difficulty": "medium",
+    "expected_concepts": ["immutability", "Object.is / === reference equality", "selector subscriptions", "structural sharing", "re-render triggers"]
+  },
+  {
+    "question": "How does prototype inheritance work in JavaScript, and what is the relationship between __proto__ and prototype?",
+    "difficulty": "medium",
+    "expected_concepts": ["prototype chain", "Object.create", "constructor functions", "ES6 class syntactic sugar", "hasOwn / hasOwnProperty"]
+  },
+  {
+    "question": "What is Cross-Site Scripting (XSS), and how does React protect against it by default (and when is dangerouslySetInnerHTML risky)?",
+    "difficulty": "medium",
+    "expected_concepts": ["DOM-based XSS", "string escaping in JSX", "dangerouslySetInnerHTML", "Content Security Policy (CSP)", "sanitization libraries"]
+  },
+  {
+    "question": "How would you architect an accessible (WCAG 2.1 AA) modal dialog component with keyboard focus traps and ARIA attributes?",
+    "difficulty": "hard",
+    "expected_concepts": ["role='dialog'", "aria-modal='true'", "focus trapping", "Esc key dismiss", "aria-labelledby and focus return"]
+  },
+  {
+    "question": "What are Web Workers and Service Workers, and how would you use them for background processing vs offline caching?",
+    "difficulty": "hard",
+    "expected_concepts": ["multi-threading in browser", "Service Worker lifecycle", "Cache API", "Progressive Web Apps (PWA)", "postMessage communication"]
+  },
+  {
+    "question": "Explain the difference between Promise.all, Promise.allSettled, Promise.race, and Promise.any.",
+    "difficulty": "easy",
+    "expected_concepts": ["fast-fail vs complete results", "first fulfilled vs first settled", "error handling strategies", "async concurrency", "Promise combinators"]
+  },
+  {
+    "question": "How do modern bundlers like Vite and Webpack handle code splitting, dynamic imports (React.lazy), and Tree Shaking?",
+    "difficulty": "medium",
+    "expected_concepts": ["ES Modules (ESM)", "dynamic import()", "React.Suspense", "Tree Shaking dead-code elimination", "bundle chunking"]
+  }
+]

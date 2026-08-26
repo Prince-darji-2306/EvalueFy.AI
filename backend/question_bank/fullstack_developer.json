@@ -1,0 +1,102 @@
+[
+  {
+    "question": "Explain how an HTTP request travels from the browser (DNS lookup, TCP handshake, TLS negotiation) to a backend server and returns a response.",
+    "difficulty": "medium",
+    "expected_concepts": ["DNS resolution", "TCP 3-way handshake", "TLS handshake", "reverse proxy / load balancer", "HTTP status codes"]
+  },
+  {
+    "question": "What is the difference between RESTful APIs and GraphQL? How do you handle over-fetching, under-fetching, and N+1 query problems in GraphQL?",
+    "difficulty": "medium",
+    "expected_concepts": ["REST endpoints", "GraphQL schema and resolvers", "over-fetching / under-fetching", "DataLoader pattern", "caching differences"]
+  },
+  {
+    "question": "Explain the difference between JWT authentication and server-side Session-based authentication with HttpOnly cookies.",
+    "difficulty": "medium",
+    "expected_concepts": ["stateless JWT vs stateful sessions", "HttpOnly / SameSite cookies", "XSS vs CSRF vulnerability", "token invalidation / revocation", "refresh token rotation"]
+  },
+  {
+    "question": "How do database indexes (B-Trees) work, and how do you use EXPLAIN ANALYZE to optimize slow SQL query execution plans?",
+    "difficulty": "hard",
+    "expected_concepts": ["B-Tree indexing", "index scan vs sequential scan", "composite indexes", "EXPLAIN ANALYZE", "cardinality and query planner"]
+  },
+  {
+    "question": "What are ACID properties in relational databases (PostgreSQL/MySQL), and how do database transaction isolation levels prevent race conditions?",
+    "difficulty": "hard",
+    "expected_concepts": ["Atomicity, Consistency, Isolation, Durability", "Dirty reads, Non-repeatable reads, Phantom reads", "Read Committed vs Serializable", "WAL (Write-Ahead Logging)", "optimistic vs pessimistic locking"]
+  },
+  {
+    "question": "What is Cross-Origin Resource Sharing (CORS), why does the browser make preflight OPTIONS requests, and how do you configure it securely?",
+    "difficulty": "easy",
+    "expected_concepts": ["Same-Origin Policy", "OPTIONS preflight", "Access-Control-Allow-Origin", "Access-Control-Allow-Credentials", "safe HTTP headers"]
+  },
+  {
+    "question": "Explain how WebSockets differ from HTTP polling and Server-Sent Events (SSE). When would you choose SSE over WebSockets?",
+    "difficulty": "easy",
+    "expected_concepts": ["full-duplex bidirectional communication", "unidirectional SSE", "HTTP upgrade handshake", "connection overhead", "reconnection management"]
+  },
+  {
+    "question": "How do you implement distributed caching with Redis (Cache-Aside vs Write-Through patterns) and prevent cache stampede/avalanche?",
+    "difficulty": "hard",
+    "expected_concepts": ["Cache-Aside pattern", "TTL expiration", "cache stampede / thundering herd", "mutex locks / probabilistic early expiration", "Redis data structures"]
+  },
+  {
+    "question": "What are Microservices vs Monolith architectures? What are the key trade-offs in operational complexity, data consistency, and latency?",
+    "difficulty": "medium",
+    "expected_concepts": ["monolith simplicity", "distributed system network latency", "database per service", "event-driven architecture", "observability requirements"]
+  },
+  {
+    "question": "How does Database Normalization (1NF, 2NF, 3NF) work, and in what scenarios is intentional denormalization beneficial?",
+    "difficulty": "easy",
+    "expected_concepts": ["functional dependency", "eliminating data redundancy", "foreign keys", "read-heavy query optimization", "data integrity trade-offs"]
+  },
+  {
+    "question": "How do you protect a full-stack web application against SQL Injection, Cross-Site Request Forgery (CSRF), and Cross-Site Scripting (XSS)?",
+    "difficulty": "medium",
+    "expected_concepts": ["parameterized queries / ORMs", "CSRF tokens / SameSite cookies", "output encoding / CSP headers", "input validation with schemas", "principle of least privilege"]
+  },
+  {
+    "question": "Explain how message brokers like RabbitMQ or Kafka handle asynchronous task processing and decoupling between services.",
+    "difficulty": "hard",
+    "expected_concepts": ["producer-consumer pattern", "publish-subscribe", "consumer groups", "idempotent message handling", "dead-letter queues (DLQ)"]
+  },
+  {
+    "question": "What is Database Connection Pooling, and why is it critical for high-concurrency API performance?",
+    "difficulty": "medium",
+    "expected_concepts": ["TCP connection overhead", "pool size limits", "async connection management (asyncpg / PgBouncer)", "thread starvation", "connection recycling"]
+  },
+  {
+    "question": "How do you design an idempotent API endpoint (e.g. POST /api/payments) to prevent double-charging on network retries?",
+    "difficulty": "hard",
+    "expected_concepts": ["Idempotency Keys", "distributed locking", "unique database constraints", "atomic transactions", "deterministic replay responses"]
+  },
+  {
+    "question": "Explain the difference between optimistic locking and pessimistic locking when handling concurrent balance updates in a web service.",
+    "difficulty": "medium",
+    "expected_concepts": ["version column / timestamp", "SELECT FOR UPDATE", "conflict resolution", "retry logic", "throughput trade-offs"]
+  },
+  {
+    "question": "What is containerization with Docker, and what is the difference between a Docker Image and a Docker Container?",
+    "difficulty": "easy",
+    "expected_concepts": ["Linux namespaces and cgroups", "read-only image layers", "writable container layer", "Dockerfile instructions", "port and volume mapping"]
+  },
+  {
+    "question": "How do CI/CD pipelines (e.g. GitHub Actions) work, and how do you implement Blue-Green or Canary deployment strategies?",
+    "difficulty": "medium",
+    "expected_concepts": ["automated testing", "build artifacts", "Blue-Green zero-downtime routing", "Canary traffic shifting", "rollback strategies"]
+  },
+  {
+    "question": "Explain the difference between vertical scaling and horizontal scaling, and what architectural changes are required to make a server stateless.",
+    "difficulty": "easy",
+    "expected_concepts": ["scale up vs scale out", "stateless application tiers", "externalizing session state to Redis", "load balancer distribution", "autoscaling groups"]
+  },
+  {
+    "question": "What are the core principles of API versioning (URI path, query parameter, header-based), and how do you deprecate endpoints gracefully?",
+    "difficulty": "easy",
+    "expected_concepts": ["/api/v1 vs header versioning", "backward compatibility", "deprecation headers (Sunset/Warning)", "documentation maintenance", "client migration period"]
+  },
+  {
+    "question": "How do you design and monitor distributed tracing and structured logging across a full-stack system (OpenTelemetry / Prometheus)?",
+    "difficulty": "hard",
+    "expected_concepts": ["Trace ID / Span ID propagation", "OpenTelemetry collector", "Prometheus metrics (counter, gauge, histogram)", "structured JSON logs", "Grafana dashboards"]
+  }
+]

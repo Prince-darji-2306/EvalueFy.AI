@@ -1,0 +1,102 @@
+[
+  {
+    "question": "What is Infrastructure as Code (IaC)? Explain the difference between declarative tools (Terraform) and imperative tools (Ansible/Bash).",
+    "difficulty": "easy",
+    "expected_concepts": ["declarative vs imperative state", "Terraform state management (tfstate)", "idempotency", "drift detection", "version control of infra"]
+  },
+  {
+    "question": "Explain how Kubernetes Pods, Deployments, ReplicaSets, and Services interact with each other in a cluster.",
+    "difficulty": "medium",
+    "expected_concepts": ["Pod atomic unit", "Deployment controller & rolling updates", "ReplicaSet scaling", "ClusterIP / NodePort / LoadBalancer Services", "kube-scheduler & kubelet"]
+  },
+  {
+    "question": "How does Kubernetes handle self-healing and pod health checks with Liveness, Readiness, and Startup Probes?",
+    "difficulty": "easy",
+    "expected_concepts": ["Liveness probe restart trigger", "Readiness probe traffic routing", "Startup probe for slow initialization", "HTTP / TCP / Exec checks", "preventing traffic to dead pods"]
+  },
+  {
+    "question": "What are Kubernetes Ingress controllers, and how do they differ from NodePort and Cloud LoadBalancer service types?",
+    "difficulty": "medium",
+    "expected_concepts": ["Layer 7 HTTP/HTTPS routing", "TLS termination / cert-manager", "path and host-based routing", "Ingress NGINX / Traefik", "cost efficiency over multiple L4 load balancers"]
+  },
+  {
+    "question": "How do you optimize Docker images for production (Multi-stage builds, minimal base images like Alpine or Distroless, and layer caching)?",
+    "difficulty": "medium",
+    "expected_concepts": ["multi-stage Dockerfile", "distroless / alpine bases", "ordering layers for cache efficiency", "security attack surface reduction", ".dockerignore"]
+  },
+  {
+    "question": "Explain GitOps principles and how tools like ArgoCD or Flux synchronize Kubernetes cluster state with a Git repository.",
+    "difficulty": "medium",
+    "expected_concepts": ["Git as single source of truth", "reconciliation loop", "declarative continuous delivery", "automated rollback on sync drift", "pull-based deployment model"]
+  },
+  {
+    "question": "How do Linux namespaces and cgroups (Control Groups) provide resource isolation and limits in container runtimes (containerd/runc)?",
+    "difficulty": "hard",
+    "expected_concepts": ["PID, NET, MNT, IPC, UTS, USER namespaces", "cgroups v1/v2 CPU & memory limits", "OOM-killer (Out of Memory)", "runc container execution", "security isolation"]
+  },
+  {
+    "question": "What is the difference between Blue-Green Deployments, Canary Deployments, and Rolling Updates? When would you use each?",
+    "difficulty": "easy",
+    "expected_concepts": ["zero-downtime routing switch (Blue-Green)", "incremental traffic percentage routing (Canary)", "step-by-step pod replacement (Rolling)", "rollback speed comparison", "resource overhead trade-offs"]
+  },
+  {
+    "question": "How do you architect a high-availability Prometheus and Grafana monitoring stack, including alerting with Alertmanager?",
+    "difficulty": "medium",
+    "expected_concepts": ["pull-based metric scraping", "PromQL query language", "Alertmanager routing and deduplication", "Thanos / Cortex long-term storage", "recording rules"]
+  },
+  {
+    "question": "Explain the Three Pillars of Observability: Metrics, Logs, and Traces. How does OpenTelemetry unify them?",
+    "difficulty": "easy",
+    "expected_concepts": ["structured time-series metrics", "centralized log aggregation (Loki/Elastic)", "distributed tracing span context", "OpenTelemetry protocol (OTLP)", "end-to-end correlation"]
+  },
+  {
+    "question": "What are Kubernetes ConfigMaps and Secrets? How do you manage secret encryption at rest and integrate with external vaults (HashiCorp Vault)?",
+    "difficulty": "medium",
+    "expected_concepts": ["base64 encoding vs encryption", "KMS envelope encryption", "External Secrets Operator", "HashiCorp Vault dynamic credentials", "mounting as volumes vs env vars"]
+  },
+  {
+    "question": "How does DNS resolution work inside a Kubernetes cluster via CoreDNS? Walk through resolving a service name (service.namespace.svc.cluster.local).",
+    "difficulty": "hard",
+    "expected_concepts": ["CoreDNS daemon/deployment", "/etc/resolv.conf search domains", "ndots:5 lookup latency", "ClusterIP DNS records", "headless services and SRV records"]
+  },
+  {
+    "question": "What is a Service Mesh (Istio / Linkerd), and what benefits does it provide for mTLS, traffic splitting, and distributed tracing?",
+    "difficulty": "hard",
+    "expected_concepts": ["sidecar proxy pattern (Envoy)", "automatic mutual TLS (mTLS)", "fine-grained canary traffic routing", "circuit breaking and retries", "control plane vs data plane"]
+  },
+  {
+    "question": "Explain the difference between horizontal pod autoscaling (HPA), vertical pod autoscaling (VPA), and cluster autoscaling (Karpenter / Cluster Autoscaler).",
+    "difficulty": "medium",
+    "expected_concepts": ["metric-driven replica scaling (HPA)", "resource request rightsizing (VPA)", "cloud node provisioning (Karpenter)", "custom metrics API (Prometheus Adapter)", "pod disruption budgets"]
+  },
+  {
+    "question": "How do you secure a CI/CD pipeline against supply chain attacks (SBOM, container vulnerability scanning with Trivy, and image signing with Cosign)?",
+    "difficulty": "hard",
+    "expected_concepts": ["Software Bill of Materials (SBOM)", "static container scanning (Trivy/Grype)", "cryptographic image signing with Cosign/Sigstore", "admissions controllers (Kyverno/OPA Gatekeeper)", "least privilege runner tokens"]
+  },
+  {
+    "question": "What are Linux iptables and eBPF (Cilium), and how do modern Kubernetes network plugins (CNIs) manage packet routing and network policies?",
+    "difficulty": "hard",
+    "expected_concepts": ["CNI plugins (Calico, Cilium, Flannel)", "eBPF kernel-level packet filtering", "iptables connection tracking bottlenecks", "NetworkPolicies firewall rules", "pod-to-pod overlay networks (VXLAN/Geneve)"]
+  },
+  {
+    "question": "How do you manage Terraform state in a team environment (remote state storage in S3, DynamoDB state locking, and state migration)?",
+    "difficulty": "easy",
+    "expected_concepts": ["remote backends", "DynamoDB state locking to prevent concurrent writes", "state file encryption", "terraform import / state rm", "workspace separation"]
+  },
+  {
+    "question": "Explain the difference between Block Storage (EBS/Ceph), File Storage (EFS/NFS), and Object Storage (S3/MinIO) in cloud architecture.",
+    "difficulty": "easy",
+    "expected_concepts": ["ReadWriteOnce vs ReadWriteMany", "POSIX filesystem compliance", "RESTful S3 API for immutable blobs", "latency and IOPS characteristics", "Kubernetes PersistentVolumes (PV/PVC)"]
+  },
+  {
+    "question": "What is a Circuit Breaker pattern in distributed microservices, and how does it prevent cascading system failures during outages?",
+    "difficulty": "medium",
+    "expected_concepts": ["Closed, Open, and Half-Open states", "consecutive failure thresholds", "fallback responses", "preventing thread pool exhaustion", "Envoy / Resilience4j implementations"]
+  },
+  {
+    "question": "How do you implement Disaster Recovery strategies across multi-region cloud setups (RTO vs RPO, Active-Active vs Active-Passive failover)?",
+    "difficulty": "hard",
+    "expected_concepts": ["Recovery Time Objective (RTO)", "Recovery Point Objective (RPO)", "cross-region database replication", "Route53 DNS health-check failover", "backup validation and drill testing"]
+  }
+]

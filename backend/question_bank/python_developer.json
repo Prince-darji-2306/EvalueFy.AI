@@ -1,22 +1,102 @@
 [
-    {
-        "question": "Explain the difference between a list and a tuple in Python. When would you use one over the other?",
-        "difficulty": "easy",
-        "expected_concepts": [
-            "mutability",
-            "performance",
-            "syntax",
-            "hashability"
-        ]
-    },
-    {
-        "question": "Explain the difference between a set and a dict in Python. When would you use one over the other?",
-        "difficulty": "easy",
-        "expected_concepts": [
-            "mutability",
-            "performance",
-            "syntax",
-            "hashability"
-        ]
-    }
+  {
+    "question": "Explain the difference between a list and a tuple in Python. When would you use one over the other?",
+    "difficulty": "easy",
+    "expected_concepts": ["mutability", "performance", "syntax", "hashability", "memory allocation"]
+  },
+  {
+    "question": "What is the difference between shallow copy and deep copy in Python? How does the copy module handle nested objects?",
+    "difficulty": "easy",
+    "expected_concepts": ["reference copying", "copy.copy", "copy.deepcopy", "nested memory references", "mutability"]
+  },
+  {
+    "question": "Explain how Python manages memory, specifically focusing on reference counting and the cyclic garbage collector.",
+    "difficulty": "medium",
+    "expected_concepts": ["reference counting", "garbage collection", "generation threshold", "gc module", "cyclic references"]
+  },
+  {
+    "question": "What is the Global Interpreter Lock (GIL) in CPython, and how does it impact multi-threaded CPU-bound vs I/O-bound tasks?",
+    "difficulty": "medium",
+    "expected_concepts": ["CPython", "GIL", "thread safety", "multiprocessing vs threading", "I/O bound concurrency"]
+  },
+  {
+    "question": "How do Python decorators work under the hood, and how would you create a decorator that accepts arguments?",
+    "difficulty": "medium",
+    "expected_concepts": ["first-class functions", "closures", "functools.wraps", "wrapper function", "decorator factory"]
+  },
+  {
+    "question": "What are Python generators, and what is the difference between yield and return in terms of memory efficiency?",
+    "difficulty": "easy",
+    "expected_concepts": ["generator functions", "yield keyword", "lazy evaluation", "iteration protocol", "memory optimization"]
+  },
+  {
+    "question": "Explain the difference between __new__ and __init__ in Python class instantiation.",
+    "difficulty": "hard",
+    "expected_concepts": ["object creation", "object initialization", "singleton pattern", "metaclasses", "dunder methods"]
+  },
+  {
+    "question": "How does Python's asyncio event loop handle asynchronous I/O? What is the role of async and await keywords?",
+    "difficulty": "medium",
+    "expected_concepts": ["event loop", "coroutines", "non-blocking I/O", "Tasks and Futures", "asyncio.gather"]
+  },
+  {
+    "question": "What are Python metaclasses, and what is a practical real-world scenario for using them?",
+    "difficulty": "hard",
+    "expected_concepts": ["type metaclass", "class construction", "framework validation", "ORM internals", "__metaclass__"]
+  },
+  {
+    "question": "Explain the difference between @staticmethod, @classmethod, and regular instance methods.",
+    "difficulty": "easy",
+    "expected_concepts": ["self vs cls", "instance binding", "factory methods", "utility methods", "descriptor protocol"]
+  },
+  {
+    "question": "How does Python's context management protocol (__enter__ and __exit__) work, and how do you implement contextlib.contextmanager?",
+    "difficulty": "medium",
+    "expected_concepts": ["with statement", "resource cleanup", "exception suppression", "contextlib", "generator context"]
+  },
+  {
+    "question": "What are *args and **kwargs in Python function definitions, and how does argument unpacking work with * and ** operators?",
+    "difficulty": "easy",
+    "expected_concepts": ["variable positional arguments", "keyword arguments", "tuple unpacking", "dictionary unpacking", "parameter order"]
+  },
+  {
+    "question": "Explain Python's Method Resolution Order (MRO) in multiple inheritance and how the C3 Linearization algorithm prevents diamond inheritance problems.",
+    "difficulty": "hard",
+    "expected_concepts": ["MRO", "super()", "C3 linearization", "diamond problem", "class hierarchy"]
+  },
+  {
+    "question": "How does dictionary lookup work in Python under the hood (hash tables, collision resolution, and insertion order preservation)?",
+    "difficulty": "hard",
+    "expected_concepts": ["hash tables", "open addressing", "hash collisions", "dict compact layout", "O(1) average lookup"]
+  },
+  {
+    "question": "What are lambda functions in Python, and what are their limitations compared to standard functions defined with def?",
+    "difficulty": "easy",
+    "expected_concepts": ["anonymous functions", "single expression limitation", "inline syntax", "map/filter/sorted", "readability"]
+  },
+  {
+    "question": "What are type hints in modern Python (PEP 484), and how do Pydantic or MyPy leverage them at runtime vs compile/check time?",
+    "difficulty": "medium",
+    "expected_concepts": ["type annotations", "typing module", "static analysis with MyPy", "Pydantic data validation", "runtime parsing"]
+  },
+  {
+    "question": "Explain the difference between mutable default arguments (e.g. def func(x=[])) and None defaults with defensive copying.",
+    "difficulty": "easy",
+    "expected_concepts": ["function definition binding", "mutable default gotcha", "None sentinel pattern", "shared state", "best practices"]
+  },
+  {
+    "question": "How would you diagnose and resolve a memory leak in a long-running Python FastAPI service?",
+    "difficulty": "hard",
+    "expected_concepts": ["tracemalloc", "memory_profiler", "objgraph", "unclosed connection pools", "circular references"]
+  },
+  {
+    "question": "What is the difference between multiprocessing and multithreading in Python, and when would you use concurrent.futures?",
+    "difficulty": "medium",
+    "expected_concepts": ["ProcessPoolExecutor", "ThreadPoolExecutor", "CPU-bound vs I/O-bound", "IPC communication", "memory isolation"]
+  },
+  {
+    "question": "Explain how Python's dataclasses work and compare them with NamedTuples and Pydantic models in terms of mutability, performance, and validation.",
+    "difficulty": "medium",
+    "expected_concepts": ["@dataclass", "NamedTuple", "Pydantic BaseModel", "field defaults", "serialization trade-offs"]
+  }
 ]
