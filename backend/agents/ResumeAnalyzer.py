@@ -1,7 +1,7 @@
 import cmarkgfm as cgfm
 from core.llm import get_llm
 from services.pdf_service import extract_text_from_pdf
-from schemas import ResumeQuestionBank, ResumeATSReport
+from schemas import ResumeQuestionBank, ResumeQuestionItem, ResumeATSReport
 
 def analyze_resume(path: str) -> dict:
     """
@@ -56,16 +56,45 @@ def generate_resume_questions(text: str) -> list:
     - Exactly 9 questions must focus on technical architecture, design trade-offs, and implementation details of the technologies they actually used.
     - Exactly 3 questions must focus on real-world engineering problem solving, debugging, and collaboration based on their background.
     
+    For each question:
+    - Assign a realistic difficulty level ("easy", "medium", or "hard").
+    - Provide a comma-separated list of expected technical concepts (e.g., "FastAPI, Connection Pooling, AsyncIO, Pydantic").
+
     Resume:
     {text}
     """
     
     llm = get_llm()
     structured_llm = llm.with_structured_output(ResumeQuestionBank, method="function_calling")
-    result: ResumeQuestionBank = structured_llm.invoke(prompt)
-    print(result)
-    if isinstance(result, ResumeQuestionBank):
-        return [q.model_dump() for q in result.questions]
-    if isinstance(result, dict) and "questions" in result:
-        return result["questions"]
-    return []
+    result = structured_llm.invoke(prompt)
+
+    raw_questions = getattr(result, "questions", []) if not isinstance(result, dict) else result.get("questions", [])
+    formatted_questions = []
+
+    for item in raw_questions:
+        if isinstance(item, ResumeQuestionItem):
+            concepts = [c.strip() for c in item.expected_concepts.split(",") if c.strip()]
+            formatted_questions.append({
+                "question": item.question.strip(),
+                "difficulty": item.difficulty,
+                "expected_concepts": concepts
+            })
+        elif isinstance(item, dict) and item.get("question"):
+            raw_concepts = item.get("expected_concepts", "")
+            if isinstance(raw_concepts, list):
+                concepts = [str(c).strip() for c in raw_concepts if str(c).strip()]
+            else:
+                concepts = [c.strip() for c in str(raw_concepts).split(",") if c.strip()]
+            formatted_questions.append({
+                "question": item["question"].strip(),
+                "difficulty": item.get("difficulty", "medium"),
+                "expected_concepts": concepts
+            })
+        elif isinstance(item, str) and item.strip():
+            formatted_questions.append({
+                "question": item.strip(),
+                "difficulty": "medium",
+                "expected_concepts": []
+            })
+
+    return formatted_questions

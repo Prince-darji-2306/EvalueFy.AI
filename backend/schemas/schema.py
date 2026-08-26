@@ -30,12 +30,14 @@ class CandidateInfo(BaseModel):
 class VoiceInput(BaseModel):
     text: str = Field(..., description="Transcribed audio snippet")
 
+from typing import List, TypedDict, Optional, Dict, Any, Union
+
 # ==========================================
 # Review & Evaluation Schemas
 # ==========================================
 class EvaluationReview(BaseModel):
     """Structured output schema for LLM response evaluation."""
-    score: int = Field(
+    score: Union[int, float] = Field(
         ...,
         ge=0,
         le=10,
@@ -61,7 +63,7 @@ class ReviewRequest(BaseModel):
 
 class FeedbackItem(BaseModel):
     question: str
-    score: int
+    score: Union[int, float]
     improvements: str
 
 class FinalReport(BaseModel):
@@ -89,15 +91,20 @@ class ResumeATSReport(BaseModel):
     ats_score: int = Field(..., ge=0, le=100, description="ATS compatibility score between 0 and 100")
     report: str = Field(..., description="Comprehensive markdown analysis report containing ## Summary, ### Key Deductions & ATS Risks, and ### Actionable Optimization Steps")
 
+from typing import Literal
+
 class ResumeQuestionItem(BaseModel):
     question: str = Field(..., description="Technical or architectural interview question tailored to the resume")
-    difficulty: str = Field(default="medium", description="Difficulty level (easy, medium, hard)")
-    expected_concepts: List[str] = Field(default_factory=list, description="Key concepts expected in candidate answer")
+    difficulty: Literal["easy", "medium", "hard"] = Field(default="medium", description="Difficulty level: easy, medium, or hard")
+    expected_concepts: str = Field(
+        default="",
+        description="Comma-separated key technical concepts expected in candidate answer (e.g. 'FastAPI, Connection Pooling, AsyncIO, Pydantic')"
+    )
 
 class ResumeQuestionBank(BaseModel):
     questions: List[ResumeQuestionItem] = Field(
         ...,
-        description="Array of 12 interview questions (9 technical + 3 general) derived from the resume"
+        description="List of 12 interview questions (9 technical + 3 general) tailored to the candidate's resume"
     )
 
 class ResumeAnalysis(BaseModel):

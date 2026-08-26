@@ -27,6 +27,7 @@ export function InterviewRoom() {
     feedbackToast,
     dismissFeedbackToast,
     errorMessage,
+    finalReport,
   } = useInterviewFlow();
 
   // Local state for fallback transcript
@@ -54,13 +55,19 @@ export function InterviewRoom() {
 
   const hasInitializedRef = React.useRef(false);
 
-  // If no active question (e.g. hard refresh), initialize standard interview once
+  // If no active question (e.g. initial landing on /interview without state), initialize standard interview once
   useEffect(() => {
-    if (!currentQuestion && !hasInitializedRef.current) {
+    if (
+      !currentQuestion &&
+      status !== 'completed' &&
+      status !== 'evaluating' &&
+      !finalReport &&
+      !hasInitializedRef.current
+    ) {
       hasInitializedRef.current = true;
       initCandidateInterview(candidateName || 'Candidate', candidateRole || 'Software Engineer');
     }
-  }, [currentQuestion, candidateName, candidateRole, initCandidateInterview]);
+  }, [currentQuestion, status, finalReport, candidateName, candidateRole, initCandidateInterview]);
 
   // Toggle Microphone
   const toggleMic = () => {
