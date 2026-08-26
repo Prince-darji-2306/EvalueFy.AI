@@ -9,7 +9,6 @@ import { useInterviewFlow } from '../hooks/useInterviewFlow';
 import { QuestionCard } from '../components/QuestionCard';
 import { TranscriptPanel } from '../components/TranscriptPanel';
 import { ProgressPips } from '../components/ProgressPips';
-import { ScoreBadge } from '../components/ScoreBadge';
 
 export function InterviewRoom() {
   const navigate = useNavigate();

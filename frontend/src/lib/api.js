@@ -1,8 +1,24 @@
-/**
- * API client connecting React Frontend to FastAPI Backend
- */
+const API_BASE = import.meta.env.VITE_API_URL || '';
 
-const API_BASE = ''; // Uses Vite proxy in development or direct host in production
+async function postJSON(endpoint, body) {
+  const res = await fetch(`${API_BASE}${endpoint}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!res.ok) {
+    const errorText = await res.text().catch(() => 'Request failed');
+    throw new Error(`Request failed (${res.status}): ${errorText}`);
+  }
+
+  const data = await res.json();
+  if (data.error) throw new Error(data.error);
+  return data;
+}
 
 export async function uploadResume(file) {
   const formData = new FormData();
@@ -13,97 +29,24 @@ export async function uploadResume(file) {
     body: formData,
   });
 
-  if (!res.ok) {
-    const errorText = await res.text().catch(() => 'Upload failed');
-    throw new Error(`Upload failed (${res.status}): ${errorText}`);
-  }
-
+  if (!res.ok) throw new Error(`Upload failed (${res.status})`);
   const data = await res.json();
-  if (data.error) {
-    throw new Error(data.error);
-  }
+  if (data.error) throw new Error(data.error);
   return data;
 }
 
-export async function startCandidateInterview(name, role) {
-  const res = await fetch(`${API_BASE}/api/candidate`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-    },
-    body: JSON.stringify({ name, role }),
-  });
+export const startCandidateInterview = (name, role) => postJSON('/api/candidate', { name, role });
 
-  if (!res.ok) {
-    const errorText = await res.text().catch(() => 'Candidate setup failed');
-    throw new Error(`Failed to start interview (${res.status}): ${errorText}`);
-  }
+export const startResumeInterview = (resume_text, name = 'Candidate', role = 'Developer') =>
+  postJSON('/api/generate-resume-questions', { resume_text, name, role });
 
-  const data = await res.json();
-  if (data.error) {
-    throw new Error(data.error);
-  }
-  return data;
-}
-
-export async function startResumeInterview(resume_text, name = 'Candidate', role = 'Developer') {
-  const res = await fetch(`${API_BASE}/api/generate-resume-questions`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-    },
-    body: JSON.stringify({ resume_text, name, role }),
-  });
-
-  if (!res.ok) {
-    const errorText = await res.text().catch(() => 'Resume question generation failed');
-    throw new Error(`Failed to generate resume interview (${res.status}): ${errorText}`);
-  }
-
-  const data = await res.json();
-  if (data.error) {
-    throw new Error(data.error);
-  }
-  return data;
-}
-
-export async function submitAnswerReview(question, answer) {
-  const res = await fetch(`${API_BASE}/api/review`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-    },
-    body: JSON.stringify({ question, answer }),
-  });
-
-  if (!res.ok) {
-    const errorText = await res.text().catch(() => 'Answer evaluation failed');
-    throw new Error(`Evaluation failed (${res.status}): ${errorText}`);
-  }
-
-  const data = await res.json();
-  if (data.error) {
-    throw new Error(data.error);
-  }
-  return data;
-}
+export const submitAnswerReview = (question, answer, session_id = null) =>
+  postJSON('/api/review', { question, answer, session_id });
 
 export async function sendVoiceSnippet(text) {
   try {
-    const res = await fetch(`${API_BASE}/api/voice`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      },
-      body: JSON.stringify({ text }),
-    });
-    return await res.json();
-  } catch (err) {
-    // Non-critical background voice logging
+    return await postJSON('/api/voice', { text });
+  } catch {
     return null;
   }
 }

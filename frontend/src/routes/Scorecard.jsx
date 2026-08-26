@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ThemeToggle } from '../components/ThemeToggle';
 import { ScoreGauge } from '../components/ScoreGauge';
-import { ScoreBadge, getScoreColor } from '../components/ScoreBadge';
 import { ReportRow } from '../components/ReportRow';
 import { useInterviewStore } from '../state/interviewStore';
 

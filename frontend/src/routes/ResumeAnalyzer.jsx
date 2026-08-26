@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { ThemeToggle } from '../components/ThemeToggle';
 import { ResumeDropzone } from '../components/ResumeDropzone';
 import { ScoreGauge } from '../components/ScoreGauge';
