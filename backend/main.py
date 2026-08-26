@@ -2,6 +2,8 @@ import os
 import shutil
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 
 from schemas import (
     CandidateInfo,
@@ -20,7 +22,7 @@ app = FastAPI(
     description="AI-Powered Mock Interview and Resume ATS Diagnostic Platform"
 )
 
-# Enable CORS for frontend connection (e.g. Vite on port 5173)
+# Enable CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -29,15 +31,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/")
-def health_check():
-    return {"status": "EvalueFy.AI Backend API is active and ready"}
-
 @app.post("/api/candidate")
 def start_candidate_interview(details: CandidateInfo):
-    """
-    Initializes a standard interview session for candidate name + target role.
-    """
+    """Initializes a standard interview session for candidate name + target role."""
     try:
         initial_state = init_interview_state(details.name, details.role)
         session_id = session_service.create_session(initial_state)
@@ -51,9 +47,7 @@ def start_candidate_interview(details: CandidateInfo):
 
 @app.post("/api/generate-resume-questions")
 def start_resume_interview(data: GenerateResumeQuestionsRequest):
-    """
-    Generates 12 tailored questions from resume text and initializes the interview graph.
-    """
+    """Generates 12 tailored questions from resume text and initializes interview."""
     if not data.resume_text.strip():
         return {"error": "No resume text provided."}
 
@@ -79,23 +73,17 @@ def start_resume_interview(data: GenerateResumeQuestionsRequest):
 
 @app.post("/api/review")
 def review_answer(data: ReviewRequest):
-    """
-    Evaluates candidate's answer and advances the state graph.
-    """
+    """Evaluates candidate's answer and advances the state graph."""
     if not data.question or not data.answer:
         return {"error": "Missing question or answer."}
 
     current_state = session_service.get_session(data.session_id)
     if not current_state:
-        # Auto-initialize fallback state if session was not found
         current_state = init_interview_state("Candidate", "Software Engineer")
         session_service.create_session(current_state)
 
     try:
-        current_state.update({
-            "question": data.question,
-            "answer": data.answer
-        })
+        current_state.update({"question": data.question, "answer": data.answer})
         result = graph.invoke(current_state)
         
         session_id = current_state.get("session_id")
@@ -114,9 +102,7 @@ def review_answer(data: ReviewRequest):
 
 @app.post("/api/upload-resume")
 async def upload_and_analyze_resume(file: UploadFile = File(...)):
-    """
-    Parses PDF resume, computes ATS score, and generates deduction report.
-    """
+    """Parses PDF resume, computes ATS score, and generates deduction report."""
     if not file.filename.lower().endswith(".pdf"):
         return {"error": "Only PDF files are supported."}
 
@@ -127,12 +113,9 @@ async def upload_and_analyze_resume(file: UploadFile = File(...)):
     try:
         with open(file_path, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
-        
         analysis = analyze_resume(file_path)
-        
         if os.path.exists(file_path):
             os.remove(file_path)
-            
         return {"status": "success", "analysis": analysis}
     except Exception as e:
         if os.path.exists(file_path):
@@ -141,10 +124,27 @@ async def upload_and_analyze_resume(file: UploadFile = File(...)):
 
 @app.post("/api/voice")
 def log_voice_snippet(data: VoiceInput):
-    """
-    Receives interim/final speech-to-text snippets.
-    """
-    text = data.text.strip()
-    if text:
-        return {"response": "Answer received and stored."}
-    return {"response": "No speech detected."}
+    """Receives interim/final speech-to-text snippets."""
+    return {"response": "Answer received."} if data.text.strip() else {"response": "No speech detected."}
+
+# ==========================================
+# Single-Service Production SPA Static Mounting
+# ==========================================
+FRONTEND_DIST = os.path.join(os.path.dirname(CURRENT_DIR), "frontend", "dist")
+if os.path.exists(FRONTEND_DIST):
+    assets_dir = os.path.join(FRONTEND_DIST, "assets")
+    if os.path.exists(assets_dir):
+        app.mount("/assets", StaticFiles(directory=assets_dir), name="assets")
+
+    @app.get("/{full_path:path}")
+    async def serve_frontend_spa(full_path: str):
+        if full_path.startswith("api/"):
+            raise HTTPException(status_code=404, detail="API endpoint not found")
+        file_path = os.path.join(FRONTEND_DIST, full_path)
+        if full_path and os.path.isfile(file_path):
+            return FileResponse(file_path)
+        return FileResponse(os.path.join(FRONTEND_DIST, "index.html"))
+else:
+    @app.get("/")
+    def health_check():
+        return {"status": "EvalueFy.AI Backend API is active and ready"}
