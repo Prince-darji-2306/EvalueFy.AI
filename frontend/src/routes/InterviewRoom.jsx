@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ThemeToggle } from '../components/ThemeToggle';
+import { AppLogo } from '../components/AppLogo';
 import { VoiceOrb } from '../components/VoiceOrb/VoiceOrb';
 import { useAudioAnalyser } from '../components/VoiceOrb/useAudioAnalyser';
 import { useSpeechRecognition } from '../hooks/useSpeechRecognition';
@@ -126,16 +127,19 @@ export function InterviewRoom() {
             </svg>
           </button>
 
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="font-display font-bold text-base text-ink">EvalueFy Studio</span>
-              <span className="w-2 h-2 rounded-full bg-verified-teal animate-pulse" />
-              <span className="font-mono text-xs text-ink-muted hidden sm:inline">LIVE SESSION</span>
-            </div>
-            <div className="flex items-center gap-2 text-xs font-mono text-ink-muted">
-              <span>{candidateName}</span>
-              <span>•</span>
-              <span className="text-signal-indigo">{candidateRole}</span>
+          <div className="flex items-center gap-3">
+            <AppLogo className="w-8 h-8 rounded-lg shadow-sm" />
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="font-display font-bold text-base text-ink">EvalueFy Studio</span>
+                <span className="w-2 h-2 rounded-full bg-verified-teal animate-pulse" />
+                <span className="font-mono text-xs text-ink-muted hidden sm:inline">LIVE SESSION</span>
+              </div>
+              <div className="flex items-center gap-2 text-xs font-mono text-ink-muted">
+                <span>{candidateName}</span>
+                <span>•</span>
+                <span className="text-signal-indigo">{candidateRole}</span>
+              </div>
             </div>
           </div>
         </div>

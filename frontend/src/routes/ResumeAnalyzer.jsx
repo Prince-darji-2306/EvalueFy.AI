@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ThemeToggle } from '../components/ThemeToggle';
+import { AppLogo } from '../components/AppLogo';
 import { ResumeDropzone } from '../components/ResumeDropzone';
 import { ScoreGauge } from '../components/ScoreGauge';
 import { uploadResume } from '../lib/api';
@@ -128,16 +129,19 @@ export function ResumeAnalyzer() {
             </svg>
           </button>
 
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="font-display font-bold text-xl text-ink">Resume ATS Diagnostic Scan</h1>
-              <span className="font-mono text-[10px] uppercase text-cyan-pulse bg-cyan-pulse/10 border border-cyan-pulse/30 px-2 py-0.5 rounded font-semibold">
-                DIAGNOSTIC ENGINE
-              </span>
+          <div className="flex items-center gap-3">
+            <AppLogo className="w-8 h-8 rounded-lg shadow-sm" />
+            <div>
+              <div className="flex items-center gap-2">
+                <h1 className="font-display font-bold text-xl text-ink">Resume ATS Diagnostic Scan</h1>
+                <span className="font-mono text-[10px] uppercase text-cyan-pulse bg-cyan-pulse/10 border border-cyan-pulse/30 px-2 py-0.5 rounded font-semibold">
+                  DIAGNOSTIC ENGINE
+                </span>
+              </div>
+              <p className="font-mono text-xs text-ink-muted">
+                Deep semantic inspection & interview synthesis
+              </p>
             </div>
-            <p className="font-mono text-xs text-ink-muted">
-              Deep semantic inspection & interview synthesis
-            </p>
           </div>
         </div>
 

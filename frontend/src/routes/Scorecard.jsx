@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ThemeToggle } from '../components/ThemeToggle';
+import { AppLogo } from '../components/AppLogo';
 import { ScoreGauge } from '../components/ScoreGauge';
 import { ReportRow } from '../components/ReportRow';
 import { useInterviewStore } from '../state/interviewStore';
@@ -62,9 +63,7 @@ export function Scorecard() {
       {/* Top Header Bar */}
       <header className="w-full max-w-5xl mx-auto px-6 py-5 flex items-center justify-between border-b border-border print:hidden">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-signal-indigo flex items-center justify-center text-white font-display font-bold">
-            E
-          </div>
+          <AppLogo className="w-10 h-10 rounded-xl shadow-sm" />
           <div>
             <div className="flex items-center gap-2">
               <h1 className="font-display font-bold text-lg text-ink">Diagnostic Scorecard</h1>

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ThemeToggle } from '../components/ThemeToggle';
+import { AppLogo } from '../components/AppLogo';
 import { useInterviewStore } from '../state/interviewStore';
 import { useInterviewFlow } from '../hooks/useInterviewFlow';
 
@@ -36,9 +37,7 @@ export function Landing() {
       {/* Top Utility Nav */}
       <header className="w-full max-w-7xl mx-auto px-6 py-5 flex items-center justify-between z-20 border-b border-border/60">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-signal-indigo flex items-center justify-center shadow-md shadow-signal-indigo/20">
-            <span className="font-display font-bold text-white text-base">E</span>
-          </div>
+          <AppLogo className="w-10 h-10 rounded-xl shadow-sm" />
           <div className="flex flex-col">
             <div className="flex items-center gap-1.5">
               <span className="font-display font-bold tracking-tight text-lg text-ink">
